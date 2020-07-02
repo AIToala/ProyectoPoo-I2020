@@ -18,6 +18,7 @@ public class Interfaz {
         // TODO code application logic here
         System.out.println("ProyectoX");
         System.out.println("POO es RP");
+        System.out.println("Hola miss");
     }
     
 }
