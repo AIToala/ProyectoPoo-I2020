@@ -9,11 +9,11 @@ import java.util.Scanner;
  *
  * @author AToala
  */
-public class Interfaz {
+public class Sistema {
 
     public Scanner sc;
     
-    public Interfaz(){
+    public Sistema(){
         sc = new Scanner(System.in);
     }
     public void menu(){
@@ -49,7 +49,7 @@ public class Interfaz {
         }
     }
     public static void main(String[] args) {
-        Interfaz ui = new Interfaz();
+        Sistema ui = new Sistema();
         ui.menu();
         
     }
