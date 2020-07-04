@@ -48,6 +48,44 @@ public class Sistema {
             }
         }
     }
+    public void menuProveedor(){
+        System.out.println("Bienvenido a menú Proveedor");
+        String op="";
+        while(!op.equals("4")){
+            System.out.println("------------------------------------------");
+            System.out.println("1. Consultar información de los pedidos");
+            System.out.println("2. Registrar producto");
+            System.out.println("3. Consultar y editar información de los productos registrados");
+            System.out.println("4. Salir");
+            System.out.println("------------------------------------------");
+            System.out.print("Ingrese una opcion: ");
+
+            op = sc.nextLine();
+            
+            //hace una opcion de acuerdo a lo ingresado por el proveedor
+            switch(op){
+                case "1":
+                    //Menu CONSULTAR INFORMACIÓN DE LOS PEDIDOS
+                    
+                    continue;
+                case "2":
+                    //Menu REGISTRAR PRODUCTO
+                    
+                    continue;
+                case "3":
+                    //Menu CONSULTAR Y EDITAR INFORMACIÓN DE LOS PRODUCTOS REGISTRADOS
+                    continue;
+                    
+                case "4":
+                    //Salir del Menu Proveedor
+                    break;
+                    
+                default:
+                    System.out.println("Opcion invalida");
+                    break;
+            }
+        }
+    }
     public static void main(String[] args) {
         Sistema ui = new Sistema();
         ui.menu();
