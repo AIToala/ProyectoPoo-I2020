@@ -86,6 +86,47 @@ public class Sistema {
             }
         }
     }
+    
+    public void menuCliente(){
+        System.out.println("MENU CLIENTE");
+        
+        String op = "";
+        while(!op.equals("4")){
+            System.out.println("------------------------------------------");
+            System.out.println("1. Consultar productos disponibles 50km a la redonda");
+            System.out.println("2. Agregar productos al carrito de compras");
+            System.out.println("3. Mostrar pedidos realizados");
+            System.out.println("4. Salir");
+            System.out.println("------------------------------------------");
+            System.out.print("Ingrese una opcion: ");
+
+            op = sc.nextLine();
+            
+            //hace una opcion de acuerdo a lo ingresado por el proveedor
+            switch(op){
+                case "1":
+                    consultarProductos();
+                    
+                    continue;
+                case "2":
+                    añadirProductos();
+                    
+                    continue;
+                case "3":
+                    System.out.println(Arrays.toString(cliente.compra.getPedidos()));
+                    continue;
+                    
+                case "4":
+                    //Salir del Menu Proveedor
+                    break;
+                    
+                default:
+                    System.out.println("Entrada no válida, ingrese 1, 2, 3 o 4");
+                    break;
+            }
+        }
+    }
+    
     public static void main(String[] args) {
         Sistema ui = new Sistema();
         ui.menu();
