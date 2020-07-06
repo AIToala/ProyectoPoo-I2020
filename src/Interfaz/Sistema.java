@@ -105,15 +105,15 @@ public class Sistema {
             //hace una opcion de acuerdo a lo ingresado por el proveedor
             switch(op){
                 case "1":
-                    consultarProductos();
+                    //consultarProductos();
                     
                     continue;
                 case "2":
-                    añadirProductos();
+                    //añadirProductos();
                     
                     continue;
                 case "3":
-                    System.out.println(Arrays.toString(cliente.compra.getPedidos()));
+                    //System.out.println(Arrays.toString(cliente.compra.getPedidos()));
                     continue;
                     
                 case "4":
