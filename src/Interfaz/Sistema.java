@@ -68,9 +68,9 @@ public class Sistema {
                         System.out.println("Inicio de sesion satisfactorio.");
                         System.out.println("Bienvenido "+u.getUser().toUpperCase());
                         if(u instanceof Cliente){
-                            menuCliente();
+                            menuCliente(u);
                         }else if(u instanceof Proveedor){
-                            menuProveedor();
+                            menuProveedor(u);
                         }
                     }
                     continue;
@@ -167,9 +167,10 @@ public class Sistema {
         }
     }
     //menu Proveedor
-    public void menuProveedor(){
+    public void menuProveedor(Usuario u){
         System.out.println("Menu Proveedor");
         String op="";
+        Proveedor currProv = (Proveedor) u;
         while(!op.equals("4")){
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar información de los pedidos");
@@ -178,7 +179,6 @@ public class Sistema {
             System.out.println("4. Salir");
             System.out.println("------------------------------------------");
             System.out.print("Ingrese una opcion: ");
-
             op = sc.nextLine();
             
             //hace una opcion de acuerdo a lo ingresado por el proveedor
@@ -206,14 +206,14 @@ public class Sistema {
         }
     }
     //menu Cliente
-    public void menuCliente(){
+    public void menuCliente(Usuario u){
         System.out.println("Menu Cliente");
-        
+        Cliente currCl = (Cliente) u;
         String op = "";
         while(!op.equals("4")){
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar productos disponibles 50km a la redonda");
-            System.out.println("2. Agregar productos al carrito de compras");
+            System.out.println("2. Ver carrito de compras");
             System.out.println("3. Mostrar pedidos realizados");
             System.out.println("4. Salir");
             System.out.println("------------------------------------------");
@@ -228,7 +228,7 @@ public class Sistema {
                     
                     continue;
                 case "2":
-                    //añadirProductos();
+                    //VerCarritoCompra();
                     
                     continue;
                 case "3":
