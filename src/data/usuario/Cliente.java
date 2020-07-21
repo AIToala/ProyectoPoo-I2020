@@ -37,6 +37,7 @@ public class Cliente extends Usuario{
     
     
     
+    
     @Override
     public void consultarProducto(ArrayList<Producto> productos){
         if(productos!=null){
@@ -110,4 +111,55 @@ public class Cliente extends Usuario{
     public void consultarPedidos(){
     }
     
+    public void verCarrito(){
+        if(carrito == null || carrito.productos.isEmpty()){ System.out.println("NO HAY PRODUCTOS EN CARRITO");}
+        ArrayList<Producto> productosU = new ArrayList<>();
+        ArrayList<Integer> cantidad = new ArrayList<>();
+        double total = 0;
+        if(carrito != null && !carrito.productos.isEmpty()){
+            for(Producto p : carrito.productos){
+                if(!productosU.contains(p)){
+                    cantidad.add(1);
+                    productosU.add(p);
+                }else{
+                    int index = productosU.indexOf(p);
+                    cantidad.set(index, cantidad.get(index) + 1);
+                }
+            }
+            for(Producto p : productosU){
+                System.out.println("---------------------------------");  
+                System.out.println("CODIGO     : " + p.getCodigo());
+                System.out.println("NOMBRE     : " + p.getNombre());
+                System.out.println("CANTIDAD   : " + p.getCategoria());
+                System.out.println("PRECIO     : " + p.getCostoUnitario());
+                System.out.println("SUBTOTAL   : " + p.getCostoUnitario() * cantidad.get(productosU.indexOf(p)));
+                System.out.println("---------------------------------");  
+                total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
+            }
+            System.out.println("TOTAL A PAGAR: " + total);
+            //código, nombre, cantidad, precio unitario, subtotal) y el total a pagar
+            
+        }
+        
+    }
+    public double calcularTotal(){
+        if(carrito.productos == null){return 0;}
+        if(carrito.productos.isEmpty()){return 0;}
+        double total = 0;
+        ArrayList<Producto> productosU = new ArrayList<>();
+        ArrayList<Integer> cantidad = new ArrayList<>();
+        for(Producto p : carrito.productos){
+            if(!carrito.productos.contains(p)){
+                cantidad.add(1);
+                productosU.add(p);
+            }else{
+                int index = productosU.indexOf(p);
+                cantidad.set(index, cantidad.get(index) + 1);
+            }
+        }
+        for(Producto p : productosU){
+            total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
+        }
+        return total;
+    }
 }
