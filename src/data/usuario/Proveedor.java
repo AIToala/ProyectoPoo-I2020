@@ -41,4 +41,18 @@ public class Proveedor extends Usuario{
     @Override
     public void filtrarProducto(){
     }
+    @Override
+    public void consultarPedidos(){
+    }
+    
+    public boolean registrarProducto(Producto p){
+        return true;
+    }
+    
+    public boolean gestionarPedidos(){
+        return true;
+    }
+    public boolean editarProducto(){
+        return true;
+    }
 }

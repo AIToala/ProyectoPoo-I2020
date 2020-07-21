@@ -30,6 +30,7 @@ public abstract class Usuario {
     
     public abstract void consultarProducto();
     public abstract void filtrarProducto();
+    public abstract void consultarPedidos();
    
     public String getUser() {
         return user;

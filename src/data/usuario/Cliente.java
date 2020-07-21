@@ -41,4 +41,8 @@ public class Cliente extends Usuario{
     @Override
     public void filtrarProducto(){
     }
+    @Override
+    public void consultarPedidos(){
+    }
+    
 }
