@@ -5,11 +5,13 @@
  */
 package data.pago;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Usuario
  */
-public class PagoPayPal extends Pago {
+public class PagoPayPal implements Pago {
     private String username;
     private String password;
 
@@ -18,5 +20,12 @@ public class PagoPayPal extends Pago {
         this.password = password;
     }
     
-    //Metodos?
+    @Override
+    public boolean procesarPago(String nombreCliente, ArrayList<String> pedidos){
+        /*if(pe)
+        int numero = (int) (Math.random() * 1000) + 100;        
+        */
+        return false;
+    }
+    
 }

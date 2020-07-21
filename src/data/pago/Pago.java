@@ -5,10 +5,12 @@
  */
 package data.pago;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Usuario
  */
-public class Pago {
-    public Pago(){}
+public interface Pago {
+    public boolean procesarPago(String s, ArrayList<String> d);
 }
