@@ -19,7 +19,9 @@ public class CarritoCompra {
     }
     
     //Metodos Carrito de Compra Consulta, Eliminar y Compra
-    public boolean anadirProductos(String codigo, ArrayList<Producto> pdts, int cantidad){
+    public boolean anadirProductos(ArrayList<Producto> pdts, String codigo, int cantidad){
+        if(pdts == null){ return false;}
+        if(pdts.isEmpty()){ return false;}
         for(Producto p: pdts){
             String cod = p.getCodigo();
             if(codigo.equals(cod)){
@@ -28,6 +30,7 @@ public class CarritoCompra {
                 }
             }
         }
+        return true;
     }
   
     public boolean eliminarProdCarrito(String codigo){
@@ -41,4 +44,5 @@ public class CarritoCompra {
         }
         return false;
     }
+    
 }
