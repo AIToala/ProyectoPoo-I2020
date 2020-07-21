@@ -6,6 +6,7 @@
 package data.usuario;
 import data.producto.Producto;
 import java.util.ArrayList;
+import Interfaz.Sistema;
 /**
  *
  * @author Usuario
@@ -18,4 +19,26 @@ public class CarritoCompra {
     }
     
     //Metodos Carrito de Compra Consulta, Eliminar y Compra
+    public boolean anadirProductos(String codigo, ArrayList<Producto> pdts, int cantidad){
+        for(Producto p: pdts){
+            String cod = p.getCodigo();
+            if(codigo.equals(cod)){
+                for(int i=0; i<cantidad; i++){
+                    productos.add(p);
+                }
+            }
+        }
+    }
+  
+    public boolean eliminarProdCarrito(String codigo){
+        for(int i = 0; i<productos.size(); i++){
+            Producto p = productos.get(i);
+            String cod = p.getCodigo();
+            if(codigo.equals(cod)){
+                productos.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
 }
