@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package data.usuario;
-
+import java.util.ArrayList;
+import data.producto.Producto;
 /**
  *
  * @author Usuario
@@ -28,8 +29,8 @@ public abstract class Usuario {
         this.correo = correo;
     }
     
-    public abstract void consultarProducto();
-    public abstract void filtrarProducto();
+    public abstract void consultarProducto(ArrayList<Producto> prod);
+    public abstract ArrayList<Producto> filtrarProducto(ArrayList<String> dataFiltro);
     public abstract void consultarPedidos();
    
     public String getUser() {

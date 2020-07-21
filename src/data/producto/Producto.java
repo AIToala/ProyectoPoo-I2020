@@ -15,13 +15,15 @@ public class Producto {
     private String nombre;
     private String descripcion;
     private CATEGORIA categoria;
+    private double costoUnitario;
 
-    public Producto(String codigo, Proveedor vendedor, String nombre, String descripcion, CATEGORIA categoria) {
+    public Producto(String codigo, Proveedor vendedor, String nombre, String descripcion, CATEGORIA categoria, double costo) {
         this.codigo = codigo;
         this.vendedor = vendedor;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
+        this.costoUnitario = costo;
     }
 
     public String getCodigo() {
@@ -56,13 +58,22 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public CATEGORIA getCategoria() {
-        return categoria;
+    public String getCategoria() {
+        return categoria.toString().toLowerCase();
     }
 
     public void setCategoria(CATEGORIA categoria) {
         this.categoria = categoria;
     }
+
+    public double getCostoUnitario() {
+        return costoUnitario;
+    }
+
+    public void setCostoUnitario(double costoUnitario) {
+        this.costoUnitario = costoUnitario;
+    }
+    
     
     
 }

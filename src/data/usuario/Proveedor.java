@@ -32,15 +32,69 @@ public class Proveedor extends Usuario{
         this.oferta = oferta;
         this.pedidos = pedidos;
     }
+    /*
+     this.codigo = codigo;
+        this.vendedor = vendedor;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
     
+    */
 
         
     @Override
-    public void consultarProducto(){
+    public void consultarProducto(ArrayList<Producto> productos){
+        if(productos!=null){
+            if(!oferta.isEmpty()){
+                System.out.println("---------------------------------");
+                System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
+                for(Producto prod : oferta){
+                    System.out.println("CODIGO     : " + prod.getCodigo());
+                    System.out.println("NOMBRE     : " + prod.getNombre());
+                    System.out.println("CATEGORIA  : " + prod.getCategoria());
+                    System.out.println("---------------------------------");
+                }
+            }
+        }
+        
     }
     @Override
-    public void filtrarProducto(){
+    public ArrayList<Producto> filtrarProducto(ArrayList<String> dataFiltro){
+        if(dataFiltro == null){
+            System.out.println("NO FILTROS PASADOS.");
+            return null;
+        }
+        if(dataFiltro.size()>2){
+            System.out.println("FILTROS NO VALIDOS");
+            return null;
+        }
+        String categoria = dataFiltro.get(0);
+        String nombre = dataFiltro.get(1);
+        if(oferta == null){
+            return null;
+        }
+        if(oferta.isEmpty()){
+            return null;
+        }
+        ArrayList<Producto> filtrado = new ArrayList<>();
+        for(Producto p : oferta){
+            if(p.getCategoria().equals(categoria.toLowerCase()) && p.getNombre().equals(nombre)){
+                filtrado.add(p);
+            }else if(p.getCategoria().equals(categoria.toLowerCase()) && nombre.equals("")){
+                filtrado.add(p);
+            }else if(p.getNombre().equals(nombre) && p.getCategoria().equals("")){
+                filtrado.add(p);
+            }else if(nombre.equals("") && categoria.equals("")){
+                filtrado.add(p);
+            }
+        }
+        if(filtrado.isEmpty()){
+            return null;
+        }
+        return filtrado;
+    
     }
+    
     @Override
     public void consultarPedidos(){
     }
