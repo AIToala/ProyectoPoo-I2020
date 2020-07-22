@@ -22,9 +22,8 @@ public class PagoPayPal implements Pago {
     
     @Override
     public boolean procesarPago(String nombreCliente, ArrayList<String> pedidos){
-        /*if(pe)
-        int numero = (int) (Math.random() * 1000) + 100;        
-        */
+        int numero = (int) (Math.random() * 1000) + 100;     
+        
         return false;
     }
     
