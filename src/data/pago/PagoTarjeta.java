@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Usuario
  */
-public class PagoTarjeta implements Pago{
+public class PagoTarjeta extends Pago{
     private String tipoTarjeta;
     private String numTarjeta;
     private String nombreTitular;

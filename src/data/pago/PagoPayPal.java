@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Usuario
  */
-public class PagoPayPal implements Pago {
+public class PagoPayPal extends Pago {
     private String username;
     private String password;
 

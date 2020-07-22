@@ -11,6 +11,6 @@ import java.util.ArrayList;
  *
  * @author Usuario
  */
-public interface Pago {
-    public boolean procesarPago(String s, ArrayList<String> d);
+public abstract class Pago {
+    public abstract boolean procesarPago(String s, ArrayList<String> d);
 }
