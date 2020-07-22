@@ -20,12 +20,12 @@ import javax.mail.internet.MimeMessage;
  * @author Usuario
  */
 public class Email{
-    private final String emisor = "no_reply@agrostorenu.com";
+    private final static String emisor = "no_reply@agrostorenu.com";
     private String receptor;
     private String mensaje;
     
     
-    public Email(String emisor, String receptor, String mensaje){
+    public Email(String receptor, String mensaje){
         this.receptor = receptor;
         this.mensaje = mensaje;
     }
@@ -86,4 +86,38 @@ public class Email{
     }
     
     
+    public boolean enviarEmail(String mensaje){
+        if(mensaje.isEmpty()){return false;}
+        // Set up the SMTP server.
+        java.util.Properties props = new java.util.Properties();
+        //smtp.myisp.com
+        props.put("mail.smtp.host", "localhost");
+        Session session = Session.getDefaultInstance(props, null);
+
+        // Construct the message
+        String to = receptor;
+        String subject = "Factura generada por compras de productos en app AGROSTORENU";
+        Message msg = new MimeMessage(session);
+        try {
+            //set message headers
+            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
+            msg.addHeader("format", "flowed");
+            msg.addHeader("Content-Transfer-Encoding", "8bit");
+            msg.setFrom(new InternetAddress(emisor, "NoReply-JD"));
+            msg.setReplyTo(InternetAddress.parse(emisor, false));
+            msg.setSubject(subject);
+            msg.setText(mensaje);
+            msg.setSentDate(new Date());
+
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            System.out.println("Email listo para envio...");
+            // Send the message.
+            Transport.send(msg);
+            System.out.println("Email enviado exitosamente");
+            return true;
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            System.out.println("ERROR AL ENVIAR EMAIL. PRUEBE NUEVAMENTE, SU COMPRA HA SIDO CANCELADA.");
+            return false;
+        }
+    }
 }
