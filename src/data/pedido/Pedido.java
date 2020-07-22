@@ -36,6 +36,62 @@ private ESTADO estado;
         this.estado = ESTADO.SOLICITADO;
     }
 
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public ArrayList<LocalDateTime> getFechas() {
+        return fechas;
+    }
+
+    public void setFechas(ArrayList<LocalDateTime> fechas) {
+        this.fechas = fechas;
+    }
+
+    public ArrayList<Producto> getProductosPedidos() {
+        return productosPedidos;
+    }
+
+    public void setProductosPedidos(ArrayList<Producto> productosPedidos) {
+        this.productosPedidos = productosPedidos;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Pago getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(Pago metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public double getTotalPagar() {
+        return totalPagar;
+    }
+
+    public void setTotalPagar(double totalPagar) {
+        this.totalPagar = totalPagar;
+    }
+
+    public ESTADO getEstado() {
+        return estado;
+    }
+
+    public void setEstado(ESTADO estado) {
+        this.estado = estado;
+    }
+
     
     
     

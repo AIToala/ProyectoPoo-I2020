@@ -29,9 +29,9 @@ public abstract class Usuario {
         this.correo = correo;
     }
     
-    public abstract void consultarProducto(ArrayList<Producto> prod);
+    public abstract boolean consultarProducto(ArrayList<Producto> prod);
     public abstract ArrayList<Producto> filtrarProducto(ArrayList<String> dataFiltro);
-    public abstract void consultarPedidos();
+    public abstract boolean consultarPedidos();
    
     public String getUser() {
         return user;

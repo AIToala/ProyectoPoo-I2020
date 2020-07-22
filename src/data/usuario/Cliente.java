@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Usuario
  */
-public class Cliente extends Usuario{
+public class Cliente extends Usuario {
     private Pago formaPago;
     private CarritoCompra carrito;
 
@@ -39,23 +39,19 @@ public class Cliente extends Usuario{
     
     
     @Override
-    public void consultarProducto(ArrayList<Producto> productos){
-        if(productos!=null){
-            if(carrito != null){
-                if(!carrito.productos.isEmpty()){
-                    System.out.println("---------------------------------");
-                    System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
-                    for(Producto prod : carrito.productos){
-                        System.out.println("CODIGO     : " + prod.getCodigo());
-                        System.out.println("NOMBRE     : " + prod.getNombre());
-                        System.out.println("CATEGORIA  : " + prod.getCategoria());
-                        System.out.println("PRECIO     : " + prod.getCategoria());
-                        System.out.println("---------------------------------");
-                    }
-                }
-            }
+    public boolean consultarProducto(ArrayList<Producto> productos){
+        if(productos == null){return false;}
+        if(productos.isEmpty()){return false;}
+        System.out.println("---------------------------------");
+        System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
+        for(Producto prod : carrito.productos){
+            System.out.println("CODIGO     : " + prod.getCodigo());
+            System.out.println("NOMBRE     : " + prod.getNombre());
+            System.out.println("CATEGORIA  : " + prod.getCategoria());
+            System.out.println("PRECIO     : " + prod.getCategoria());
+            System.out.println("---------------------------------");
         }
-        
+        return true;
     }
 
     @Override
@@ -68,8 +64,8 @@ public class Cliente extends Usuario{
             System.out.println("FILTROS NO VALIDOS");
             return null;
         }
-        String categoria = dataFiltro.get(0);
-        String nombre = dataFiltro.get(1);
+        String categoria = dataFiltro.get(0).toLowerCase();
+        String nombre = dataFiltro.get(1).toLowerCase();
         String rangoPrecio = dataFiltro.get(2);
         double rangoInicial = 0;
         double rangoFinal = 0;
@@ -88,13 +84,13 @@ public class Cliente extends Usuario{
         if(carrito.productos.isEmpty()){ return null;}
         ArrayList<Producto> filtrado = new ArrayList<>();
         for(Producto p : carrito.productos){
-            if(p.getCategoria().equals(categoria.toLowerCase()) && p.getNombre().equals(nombre) &&
+            if(p.getCategoria().equals(categoria) && p.getNombre().contains(nombre) &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
-            }else if(p.getCategoria().equals(categoria.toLowerCase()) && p.getNombre().equals("") &&
+            }else if(p.getCategoria().equals(categoria) && p.getNombre().equals("") &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
-            }else if(p.getCategoria().equals("") && p.getNombre().equals(nombre) &&
+            }else if(p.getCategoria().equals("") && p.getNombre().contains(nombre) &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
             }else if(nombre.equals("") && categoria.equals("") && p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
@@ -108,24 +104,16 @@ public class Cliente extends Usuario{
     
     }
     @Override
-    public void consultarPedidos(){
+    public boolean consultarPedidos(){
+        return true;
     }
     
     public void verCarrito(){
         if(carrito == null || carrito.productos.isEmpty()){ System.out.println("NO HAY PRODUCTOS EN CARRITO");}
-        ArrayList<Producto> productosU = new ArrayList<>();
-        ArrayList<Integer> cantidad = new ArrayList<>();
-        double total = 0;
-        if(carrito != null && !carrito.productos.isEmpty()){
-            for(Producto p : carrito.productos){
-                if(!productosU.contains(p)){
-                    cantidad.add(1);
-                    productosU.add(p);
-                }else{
-                    int index = productosU.indexOf(p);
-                    cantidad.set(index, cantidad.get(index) + 1);
-                }
-            }
+        else{
+            ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.productos);
+            ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.productos);
+            double total = 0;
             for(Producto p : productosU){
                 System.out.println("---------------------------------");  
                 System.out.println("CODIGO     : " + p.getCodigo());
@@ -137,8 +125,6 @@ public class Cliente extends Usuario{
                 total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
             }
             System.out.println("TOTAL A PAGAR: " + total);
-            //código, nombre, cantidad, precio unitario, subtotal) y el total a pagar
-            
         }
         
     }
@@ -146,17 +132,8 @@ public class Cliente extends Usuario{
         if(carrito.productos == null){return 0;}
         if(carrito.productos.isEmpty()){return 0;}
         double total = 0;
-        ArrayList<Producto> productosU = new ArrayList<>();
-        ArrayList<Integer> cantidad = new ArrayList<>();
-        for(Producto p : carrito.productos){
-            if(!carrito.productos.contains(p)){
-                cantidad.add(1);
-                productosU.add(p);
-            }else{
-                int index = productosU.indexOf(p);
-                cantidad.set(index, cantidad.get(index) + 1);
-            }
-        }
+        ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.productos);
+        ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.productos);
         for(Producto p : productosU){
             total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
         }

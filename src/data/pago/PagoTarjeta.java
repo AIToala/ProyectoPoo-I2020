@@ -38,7 +38,7 @@ public class PagoTarjeta implements Pago{
                      "\t\t\t" + "COMPRAMEPLS" +
                      "\nGracias por confiar en nosotros, AgroStoreNU.";
         Email e = new Email(emailTo, msg);
-        if(e.enviarEmail(msg)){
+        if(e.enviarEmail()){
             return true;}
         return false;
     }

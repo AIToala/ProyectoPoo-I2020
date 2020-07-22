@@ -86,7 +86,7 @@ public class Email{
     }
     
     
-    public boolean enviarEmail(String mensaje){
+    public boolean enviarEmail(){
         if(mensaje.isEmpty()){return false;}
         // Set up the SMTP server.
         java.util.Properties props = new java.util.Properties();

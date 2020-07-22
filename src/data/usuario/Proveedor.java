@@ -4,9 +4,13 @@
  * and open the template in the editor.
  */
 package data.usuario;
+import data.pedido.ESTADO;
 import data.producto.Producto;
 import data.pedido.Pedido;
+import data.producto.CATEGORIA;
 import java.util.ArrayList;
+import java.util.Scanner;
+import data.mail.Email;
 /**
  *
  * @author Usuario
@@ -32,31 +36,22 @@ public class Proveedor extends Usuario{
         this.oferta = oferta;
         this.pedidos = pedidos;
     }
-    /*
-     this.codigo = codigo;
-        this.vendedor = vendedor;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.categoria = categoria;
     
-    */
 
         
     @Override
-    public void consultarProducto(ArrayList<Producto> productos){
-        if(productos!=null){
-            if(!oferta.isEmpty()){
-                System.out.println("---------------------------------");
-                System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
-                for(Producto prod : oferta){
-                    System.out.println("CODIGO     : " + prod.getCodigo());
-                    System.out.println("NOMBRE     : " + prod.getNombre());
-                    System.out.println("CATEGORIA  : " + prod.getCategoria());
-                    System.out.println("---------------------------------");
-                }
-            }
+    public boolean consultarProducto(ArrayList<Producto> productos){
+        if(productos == null){return false;}
+        if(productos.isEmpty()){return false;}
+        System.out.println("---------------------------------");
+        System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
+        for(Producto prod : oferta){
+            System.out.print("\nCODIGO     : " + prod.getCodigo() + "|");
+            System.out.print("\nNOMBRE     : " + prod.getNombre() + "|");
+            System.out.print("\nCATEGORIA  : " + prod.getCategoria() + "|");
+            System.out.println("---------------------------------");
         }
-        
+        return true;
     }
     @Override
     public ArrayList<Producto> filtrarProducto(ArrayList<String> dataFiltro){
@@ -69,7 +64,7 @@ public class Proveedor extends Usuario{
             return null;
         }
         String categoria = dataFiltro.get(0);
-        String nombre = dataFiltro.get(1);
+        String nombre = dataFiltro.get(1).toLowerCase();
         if(oferta == null){
             return null;
         }
@@ -78,11 +73,11 @@ public class Proveedor extends Usuario{
         }
         ArrayList<Producto> filtrado = new ArrayList<>();
         for(Producto p : oferta){
-            if(p.getCategoria().equals(categoria.toLowerCase()) && p.getNombre().equals(nombre)){
+            if(p.getCategoria().equals(categoria.toLowerCase()) && p.getNombre().toLowerCase().contains(nombre)){
                 filtrado.add(p);
             }else if(p.getCategoria().equals(categoria.toLowerCase()) && nombre.equals("")){
                 filtrado.add(p);
-            }else if(p.getNombre().equals(nombre) && p.getCategoria().equals("")){
+            }else if(p.getNombre().contains(nombre) && categoria.equals("")){
                 filtrado.add(p);
             }else if(nombre.equals("") && categoria.equals("")){
                 filtrado.add(p);
@@ -96,17 +91,235 @@ public class Proveedor extends Usuario{
     }
     
     @Override
-    public void consultarPedidos(){
+    public boolean consultarPedidos(){
+        if(pedidos == null){return false;}
+        if(pedidos.isEmpty()){return false;}
+        System.out.println("---------------------------------");
+        System.out.println("PEDIDOS REALIZADO AL PROVEEDOR " + this.getUser());
+        for(Pedido pedido : pedidos){
+            System.out.println("CODIGO     : " + pedido.getCodigo()+ "|");
+            System.out.println("FECHA INICIO   : " + pedido.getFechas().get(0));
+            System.out.println("PRODUCTOS:" + pedido.getProductosPedidos() + "|");
+            if(pedido.getProductosPedidos() != null || !pedido.getProductosPedidos().isEmpty()){
+                ArrayList<Producto> productosU = Producto.getProductosUnicos(pedido.getProductosPedidos());
+                ArrayList<Integer> cantidad = Producto.getCantidadProducto(pedido.getProductosPedidos());
+                System.out.println("CODIGO | NOMBRE | CANTIDAD");
+                for(Producto p : productosU){
+                    int index = productosU.indexOf(p);
+                    System.out.println(p.getCodigo()+"|"+p.getNombre()+"|"+cantidad.get(index));                    
+                }
+            }else{
+                System.out.println("No hay productos...");
+            }
+            System.out.println("\nDATOS DEL CLIENTE  : " + 
+                             "Nombre: " + pedido.getCliente().getNombre() + "\n" + 
+                             "Direccion: " + pedido.getCliente().getDireccion() + "\n" +
+                             "Numero Telefonico: " + pedido.getCliente().correo);
+            System.out.println("DATOS DEL METODO DE PAGO  : " + pedido.getMetodoPago().toString());
+            System.out.println("\nTOTAL DEL PEDIDO  : " + pedido.getTotalPagar());
+
+            System.out.println("---------------------------------");
+        }
+        return true;
     }
     
     public boolean registrarProducto(Producto p){
+        if(p == null){return false;}
+        if(oferta == null){this.oferta = new ArrayList<>();}
+        ArrayList<Producto> productosU = Producto.getProductosUnicos(oferta);
+        Scanner sc = new Scanner(System.in);
+        if(productosU == null){ productosU = new ArrayList<>();}
+        System.out.println("REGISTRANDO NUEVO PRODUCTO.");
+        System.out.println("Ingrese codigo unico de su producto a registrar: ");
+        String codigo = sc.nextLine();
+        if(!Producto.esProductoUnico(oferta, codigo)){
+            System.out.println("El codigo ingresado ya existe. Ingrese nuevamente.");
+            return false;
+        }
+        System.out.println("Ingrese nombre del producto:");
+        String nombre = sc.nextLine();
+        System.out.println("Ingrese breve descripcion del producto:");
+        String descr = sc.nextLine();
+        System.out.println("ESCOJA LAS CATEGORIAS A LAS QUE PERTENECE EL PRODUCTO.");
+        boolean salir = false;
+        CATEGORIA elegida = null;
+        ArrayList<CATEGORIA> categorias = new ArrayList<>();
+        while(!salir){
+            System.out.println("Ingrese el numero de la categoria a añadir al producto "
+                    + "\n(Categorias disponibles\n1. CARNICO.\n2. VEGETAL\n3. FRUTA\n4. LACTEO\n5. CONSERVA");
+            String cat = sc.nextLine().toUpperCase();
+            switch(cat){
+                case "1":
+                    elegida = CATEGORIA.CARNICO;
+                case "2":
+                    elegida = CATEGORIA.VEGETAL;
+                case "3":
+                    elegida = CATEGORIA.FRUTA;
+                case "4":
+                    elegida = CATEGORIA.LACTEO;
+                case "5":
+                    elegida = CATEGORIA.CONSERVA;
+                default:
+                    System.out.println("Elja correctamente...");
+            }
+            if(elegida != null){categorias.add(elegida);}
+            System.out.println("Desea añadir otra categoria mas?: (Si/No)");
+            String resp = sc.nextLine().toLowerCase();
+            if(resp.equals("si")){
+                salir = false;
+            }else{
+                salir = true;
+            }
+        }
+        if(elegida == null){
+            elegida = CATEGORIA.CONSERVA;
+        }
+        System.out.println("Ingrese costo Unitario del producto:");
+        String precio = sc.nextLine();
+        double costoU;
+        try{
+            costoU = Double.parseDouble(precio);
+        }catch(NumberFormatException e){
+            System.out.println("Valor no numerico.");
+            return false;
+        }
+        System.out.println("INGRESE CANTIDAD DEL PRODUCTO DESCRITO A REGISTRAR: ");
+        String cant = sc.nextLine();
+        int cantidad;
+        try{
+            cantidad = Integer.parseInt(cant);
+        }catch(NumberFormatException e){
+            System.out.println("Valor no numerico");
+            return false;
+        }
+        
+        for(int i=0; i<cantidad;i++){
+            Producto newProd = new Producto(codigo, this, nombre, descr, categorias, costoU); 
+            oferta.add(newProd);
+        }
         return true;
     }
     
     public boolean gestionarPedidos(){
+        if(!consultarPedidos()){
+            System.out.println("NO HAY PEDIDOS...");
+            return false;
+        }
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Que pedido desea cambiar su estado?.");
+        System.out.println("Ingrese el codigo del pedido:");
+        String cod = sc.nextLine();
+        for(Pedido p : pedidos){
+            if(p.getCodigo().equals(cod) && p.getEstado().equals(ESTADO.SOLICITADO)){
+                System.out.println("EL ESTADO ACTUAL DEL PEDIDO ES SOLICITADO.");
+                System.out.println("DESEA CAMBIAR SU ESTADO A PROCESANDO? (si/no):");
+                if(sc.nextLine().toLowerCase().equals("si")){
+                    p.setEstado(ESTADO.PROCESANDO);
+                    return true;
+                }else {
+                    return false;
+                }
+            }else if(p.getCodigo().equals(cod) && p.getEstado().equals(ESTADO.PROCESANDO)){
+                System.out.println("EL ESTADO ACTUAL DEL PEDIDO ES PROCESANDO.");
+                System.out.println("DESEA CAMBIAR SU ESTADO A FINALIZADO? (si/no):");
+                if(sc.nextLine().toLowerCase().equals("si")){
+                    p.setEstado(ESTADO.PROCESANDO);
+                    return true;
+                }else {
+                    return false;
+                }
+            }else if(p.getCodigo().equals(cod) && p.getEstado().equals(ESTADO.DESPACHADO)){
+                System.out.println("EL PEDIDO HA SIDO DESPACHADO.");
+                System.out.println("ENVIANDO CORREO DE ENVIO EXITOSO A CLIENTE.");
+                String msg = "SU PEDIDO HA SIDO ENVIADO A LA DIRECCION PROPORCIONADA. CHEQUEE EL ESTADO DE SUS PEDIDOS EN AGROSTORENU.";
+                Email e = new Email(p.getCliente().getCorreo(), msg);
+                if(!e.enviarEmail()){
+                    System.out.println("ERROR AL ENVIAR EL CORREO.");
+                }else{
+                    System.out.println("CORREO ENVIADO.");
+                }
+            }
+        }
         return true;
     }
-    public boolean editarProducto(){
+    public boolean eliminarProducto(String cod, int cantidad){
+        if(cod.isEmpty()){return false;}
+        if(cantidad == 0){return false;}
+        if(oferta == null){return false;}
+        if(oferta.isEmpty()){return false;}
+        int i = 0;
+        for(Producto prod : oferta){
+            if(i<cantidad){
+                if(prod.getCodigo().equals(cod)){
+                    oferta.remove(prod);
+                    i++;
+                }
+            }else{
+                break;
+            }
+        }
+        return true;
+    }
+    public boolean editarProducto(String cod){
+        if(cod.isEmpty()){return false;}
+        if(oferta == null){return false;}
+        if(oferta.isEmpty()){return false;}
+        Scanner sc = new Scanner(System.in);
+        for(Producto prod: oferta){
+            if(prod.getCodigo().equals(cod)){
+                System.out.println("EDICION DE PRODUCTO (SI EL CAMPO SE DEJA VACIO, NO SE EDITARA)");
+                System.out.println("Nombre Actual del producto: " + prod.getNombre());
+                System.out.println("Ingrese nuevo nombre del producto: ");
+                String name = sc.nextLine();
+                prod.setNombre(name);
+                System.out.println("Descripcion actual del producto: " + prod.getDescripcion());
+                System.out.println("Ingrese nueva descripcion del producto: ");
+                String descr = sc.nextLine();
+                prod.setDescripcion(descr);
+                System.out.println("CATEGORIAS actuales del producto: " + prod.getCategoria().toString());
+                boolean salir = false;
+                System.out.println("Desea borrar las categorias del producto para luego editar?:"
+                        + "(hacer esto borrara las categorias registrada del producto) (si/no)");
+                if(sc.nextLine().toLowerCase().equals("si")){
+                    prod.clearCategoria();
+                }
+                System.out.println("Editando categorias -----");
+                while(!salir){
+                    System.out.println("Ingrese el numero de la categoria a añadir al producto "
+                            + "\n(Categorias disponibles\n1. CARNICO.\n2. VEGETAL\n3. FRUTA\n4. LACTEO\n5. CONSERVA");
+                    String cat = sc.nextLine().toUpperCase();
+                    switch(cat){
+                        case "1":
+                            prod.setCategoria(CATEGORIA.CARNICO);
+                        case "2":
+                            prod.setCategoria(CATEGORIA.VEGETAL);
+                        case "3":
+                            prod.setCategoria(CATEGORIA.FRUTA);
+                        case "4":
+                            prod.setCategoria(CATEGORIA.LACTEO);
+                        case "5":
+                            prod.setCategoria(CATEGORIA.CONSERVA);
+                        default:
+                            System.out.println("Elja correctamente...");
+                    }
+                    System.out.println("Desea añadir otra categoria mas?: (Si/No)");
+                    String resp = sc.nextLine().toLowerCase();
+                    if(resp.equals("si")){
+                        salir = false;
+                    }else{
+                        salir = true;
+                    }
+                }
+                System.out.println("Ingrese nuevo costo Unitario del producto: ");
+                String costoU = sc.nextLine();
+                try{
+                    prod.setCostoUnitario(Double.parseDouble(costoU));
+                }catch(NumberFormatException e){
+                    System.out.println("Dato no permitido se dejara producto con costo actual.");
+                }
+                
+            }
+        }
         return true;
     }
 }

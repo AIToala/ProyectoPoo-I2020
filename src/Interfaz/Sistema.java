@@ -173,10 +173,13 @@ public class Sistema {
         Proveedor currProv = (Proveedor) u;
         while(!op.equals("4")){
             System.out.println("------------------------------------------");
-            System.out.println("1. Consultar información de los pedidos");
-            System.out.println("2. Registrar producto");
-            System.out.println("3. Consultar y editar información de los productos registrados");
-            System.out.println("4. Salir");
+            System.out.println("1. Consultar Información de los pedidos.");
+            System.out.println("2. Gestionar estado de los pedidos.");
+            System.out.println("3. Registrar producto.");
+            System.out.println("4. Consultar Informacion de los productos registrados.");
+            System.out.println("5. Editar Información de los productos registrados.");
+            System.out.println("6. Eliminar producto de los productos registrados.");
+            System.out.println("6. Salir");
             System.out.println("------------------------------------------");
             System.out.print("Ingrese una opcion: ");
             op = sc.nextLine();
@@ -185,20 +188,65 @@ public class Sistema {
             switch(op){
                 case "1":
                     //Menu CONSULTAR INFORMACIÓN DE LOS PEDIDOS
-                    
+                    if(!currProv.consultarPedidos()){
+                        System.out.println("NO HAY PEDIDOS...");
+                    }
                     continue;
                 case "2":
-                    //Menu REGISTRAR PRODUCTO
+                    if(!currProv.gestionarPedidos()){
+                        System.out.println("NO HAY PEDIDOS...");
+                    }
                     
                     continue;
                 case "3":
+                    
+                    continue;
+                case "4":
                     //Menu CONSULTAR Y EDITAR INFORMACIÓN DE LOS PRODUCTOS REGISTRADOS
+                    if(!currProv.consultarProducto(productos)){
+                        System.out.println("NO HAY PRODUCTOS REGISTRADOS...");
+                    }
+                    System.out.println("Retornando al menu...");
+                    continue;
+                case "5":
+                    System.out.println("PRODUCTOS REGISTRADOS DEL PROVEEDOR.");
+                    if(!currProv.consultarProducto(productos)){
+                        System.out.println("NO HAY PRODUCTOS REGISTRADOS...");
+                    }else{
+                        System.out.println("Desea editar informacion de algun producto? (Si/No)");
+                        String pregunta = sc.nextLine().toLowerCase();
+                        if(pregunta.equals("si")){
+                            System.out.println("Ingreso de filtros (Categoria y Nombre)");
+                            System.out.println("Filtro por Categorias de los productos"
+                                             + " cárnicos, vegetales, frutas, lácteos y conservas.");
+                            System.out.println("Escriba categoria del producto que desea editar: ");
+                            String categoria = sc.nextLine();
+                            System.out.println("Escriba nombre de producto que desea editar:");
+                            String nombre = sc.nextLine();
+                            ArrayList<String> dataFiltro = new ArrayList<>();
+                            dataFiltro.add(categoria);dataFiltro.add(nombre);
+                            ArrayList<Producto> filtro = currProv.filtrarProducto(dataFiltro);
+                            //hacer clear en consola
+                            if(currProv.consultarProducto(filtro)){
+                                System.out.println("Ingrese codigo del producto a editar: ");
+                                String cod = sc.nextLine();
+                                if(!currProv.editarProducto(cod)){
+                                    System.out.println("Producto no fue editado...");
+                                }else{
+                                    System.out.println("Producto editado con exito.");
+                                }
+                            }
+                        }
+                    }
+                    System.out.println("Retornando al menu...");
                     continue;
                     
-                case "4":
-                    //Salir del Menu Proveedor
-                    break;
+                case "6":
                     
+                    continue;
+                case "7":
+                    
+                    break;
                 default:
                     System.out.println("Opcion invalida");
                     break;

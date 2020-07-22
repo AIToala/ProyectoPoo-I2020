@@ -5,6 +5,7 @@
  */
 package data.producto;
 import data.usuario.Proveedor;
+import java.util.ArrayList;
 /**
  *
  * @author Usuario
@@ -14,15 +15,15 @@ public class Producto {
     private Proveedor vendedor;
     private String nombre;
     private String descripcion;
-    private CATEGORIA categoria;
+    private ArrayList<CATEGORIA> categorias;
     private double costoUnitario;
 
-    public Producto(String codigo, Proveedor vendedor, String nombre, String descripcion, CATEGORIA categoria, double costo) {
+    public Producto(String codigo, Proveedor vendedor, String nombre, String descripcion, ArrayList<CATEGORIA> categoria, double costo) {
         this.codigo = codigo;
         this.vendedor = vendedor;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.categoria = categoria;
+        this.categorias = categoria;
         this.costoUnitario = costo;
     }
 
@@ -47,7 +48,9 @@ public class Producto {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        if(!nombre.equals("")){
+            this.nombre = nombre;
+        }
     }
 
     public String getDescripcion() {
@@ -55,15 +58,26 @@ public class Producto {
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+        if(!descripcion.equals("")){
+            this.descripcion = descripcion;
+        }
     }
 
-    public String getCategoria() {
-        return categoria.toString().toLowerCase();
+    public ArrayList<String> getCategoria() {
+        ArrayList<String> s = new ArrayList<>();
+        for(CATEGORIA cat : categorias){
+            s.add(cat.name());
+        }
+        return s;
     }
 
     public void setCategoria(CATEGORIA categoria) {
-        this.categoria = categoria;
+        if(!categorias.contains(categoria)){
+            this.categorias.add(categoria);
+        }
+    }
+    public void clearCategoria(){
+        categorias = new ArrayList<>();
     }
 
     public double getCostoUnitario() {
@@ -74,6 +88,42 @@ public class Producto {
         this.costoUnitario = costoUnitario;
     }
     
+    public static ArrayList<Integer> getCantidadProducto(ArrayList<Producto> prod){
+        if(prod == null){return null;}
+        if(prod.isEmpty()){return null;}
+        ArrayList<Integer> cantidad = new ArrayList<>();
+        for(Producto p : prod){
+            if(!prod.contains(p)){
+                cantidad.add(1);
+            }else{
+                int index = prod.indexOf(p);
+                cantidad.set(index, cantidad.get(index) + 1);
+            }
+        }
+        return cantidad;
+    }
+    public static ArrayList<Producto> getProductosUnicos(ArrayList<Producto> prod){
+        if(prod == null){return null;}
+        if(prod.isEmpty()){return null;}
+        ArrayList<Producto> productoUnico = new ArrayList<>();
+        for(Producto p : prod){
+            if(!prod.contains(p)){
+                productoUnico.add(p);
+            }
+        }
+        return productoUnico;
+    }
     
+    public static boolean esProductoUnico(ArrayList<Producto> prod, String cod){
+        if(prod == null){return true;}
+        if(prod.isEmpty()){return true;}
+        ArrayList<Producto> productoU = Producto.getProductosUnicos(prod);
+        for(Producto p : productoU){
+            if(p.getCodigo().equals(cod)){
+                return false;
+            }
+        }
+        return true;
+    }
     
 }
