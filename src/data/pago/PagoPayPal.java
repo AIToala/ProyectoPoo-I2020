@@ -21,10 +21,20 @@ public class PagoPayPal implements Pago {
     }
     
     @Override
-    public boolean procesarPago(String nombreCliente, ArrayList<String> pedidos){
-        int numero = (int) (Math.random() * 1000) + 100;     
-        
+    public boolean procesarPago(String emailTo, ArrayList<String> pedidos){
+        if(emailTo.isEmpty()){return false;}
+        if(pedidos == null) {return false;}
+        if(pedidos.isEmpty()){return false;}
+        double totalAPagar = 0;
+        for(String texto:pedidos){
+            String[] data = texto.split("-");
+            String totalPago = data[5];
+            totalAPagar += Double.parseDouble(totalPago);
+        }
+        int numero = (int) ((Math.random() * 1000 ) + 100);
+        if(numero>=totalAPagar){
+            return true;
+        }
         return false;
     }
-    
 }
