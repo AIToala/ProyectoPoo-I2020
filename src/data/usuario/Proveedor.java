@@ -11,6 +11,7 @@ import data.producto.CATEGORIA;
 import java.util.ArrayList;
 import java.util.Scanner;
 import data.mail.Email;
+import java.time.LocalDateTime;
 /**
  *
  * @author Usuario
@@ -36,6 +37,23 @@ public class Proveedor extends Usuario{
         this.oferta = oferta;
         this.pedidos = pedidos;
     }
+
+    public String getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(String contacto) {
+        this.contacto = contacto;
+    }
+
+    public ArrayList<Producto> getOferta() {
+        return oferta;
+    }
+
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
+    }
+
     
 
         
@@ -123,8 +141,7 @@ public class Proveedor extends Usuario{
         return true;
     }
     
-    public boolean registrarProducto(Producto p){
-        if(p == null){return false;}
+    public boolean registrarProducto(){
         if(oferta == null){this.oferta = new ArrayList<>();}
         ArrayList<Producto> productosU = Producto.getProductosUnicos(oferta);
         Scanner sc = new Scanner(System.in);
@@ -196,6 +213,7 @@ public class Proveedor extends Usuario{
         for(int i=0; i<cantidad;i++){
             Producto newProd = new Producto(codigo, this, nombre, descr, categorias, costoU); 
             oferta.add(newProd);
+            
         }
         return true;
     }
@@ -215,15 +233,17 @@ public class Proveedor extends Usuario{
                 System.out.println("DESEA CAMBIAR SU ESTADO A PROCESANDO? (si/no):");
                 if(sc.nextLine().toLowerCase().equals("si")){
                     p.setEstado(ESTADO.PROCESANDO);
+                    p.setFechas(LocalDateTime.now());
                     return true;
                 }else {
                     return false;
                 }
             }else if(p.getCodigo().equals(cod) && p.getEstado().equals(ESTADO.PROCESANDO)){
                 System.out.println("EL ESTADO ACTUAL DEL PEDIDO ES PROCESANDO.");
-                System.out.println("DESEA CAMBIAR SU ESTADO A FINALIZADO? (si/no):");
+                System.out.println("DESEA CAMBIAR SU ESTADO A DESPACHADO? (si/no):");
                 if(sc.nextLine().toLowerCase().equals("si")){
                     p.setEstado(ESTADO.PROCESANDO);
+                    p.setFechas(LocalDateTime.now());
                     return true;
                 }else {
                     return false;
@@ -242,23 +262,31 @@ public class Proveedor extends Usuario{
         }
         return true;
     }
-    public boolean eliminarProducto(String cod, int cantidad){
+    public boolean eliminarProducto(String cod, String cantidad){
         if(cod.isEmpty()){return false;}
-        if(cantidad == 0){return false;}
+        int cant = 0;
+        try{
+            cant = Integer.parseInt(cantidad);
+        }catch(NumberFormatException e){
+            return false;
+        }
+        if(cant == 0){return false;}
         if(oferta == null){return false;}
         if(oferta.isEmpty()){return false;}
         int i = 0;
+        boolean borro = false;
         for(Producto prod : oferta){
-            if(i<cantidad){
+            if(i<cant){
                 if(prod.getCodigo().equals(cod)){
                     oferta.remove(prod);
+                    borro = true;
                     i++;
                 }
             }else{
                 break;
             }
         }
-        return true;
+        return borro;
     }
     public boolean editarProducto(String cod){
         if(cod.isEmpty()){return false;}

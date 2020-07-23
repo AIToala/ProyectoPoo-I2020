@@ -9,7 +9,6 @@ import data.producto.Producto;
 import data.usuario.Cliente;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
-import data.pedido.ESTADO;
 
 
 //- estado: ESTADO = SOLICITADO
@@ -48,8 +47,8 @@ private ESTADO estado;
         return fechas;
     }
 
-    public void setFechas(ArrayList<LocalDateTime> fechas) {
-        this.fechas = fechas;
+    public void setFechas(LocalDateTime fecha) {
+        this.fechas.add(fecha);
     }
 
     public ArrayList<Producto> getProductosPedidos() {

@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class Sistema {
 
     public Scanner sc;
-    public ArrayList<Usuario> usuarios;
-    public ArrayList<Producto> productos;
-    public ArrayList<Pedido> pedidos;
+    public static ArrayList<Usuario> usuarios;
+    public static ArrayList<Producto> productos;
+    public static ArrayList<Pedido> pedidos;
     
     
     public Sistema(){
@@ -168,9 +168,10 @@ public class Sistema {
     }
     //menu Proveedor
     public void menuProveedor(Usuario u){
+        Sistema.actualizarData();
+        Proveedor currProv = (Proveedor) u;
         System.out.println("Menu Proveedor");
         String op="";
-        Proveedor currProv = (Proveedor) u;
         while(!op.equals("4")){
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar Información de los pedidos.");
@@ -179,7 +180,7 @@ public class Sistema {
             System.out.println("4. Consultar Informacion de los productos registrados.");
             System.out.println("5. Editar Información de los productos registrados.");
             System.out.println("6. Eliminar producto de los productos registrados.");
-            System.out.println("6. Salir");
+            System.out.println("7. Salir");
             System.out.println("------------------------------------------");
             System.out.print("Ingrese una opcion: ");
             op = sc.nextLine();
@@ -196,10 +197,12 @@ public class Sistema {
                     if(!currProv.gestionarPedidos()){
                         System.out.println("NO HAY PEDIDOS...");
                     }
-                    
+                    System.out.println("Retornando al menu...");
                     continue;
                 case "3":
-                    
+                    if(!currProv.registrarProducto()){
+                        System.out.println("HUBO UN ERROR AL REGISTRAR EL PRODUCTO.");
+                    }
                     continue;
                 case "4":
                     //Menu CONSULTAR Y EDITAR INFORMACIÓN DE LOS PRODUCTOS REGISTRADOS
@@ -242,7 +245,22 @@ public class Sistema {
                     continue;
                     
                 case "6":
-                    
+                    if(!currProv.consultarProducto(productos)){
+                        System.out.println("NO HAY PRODUCTOS REGISTRADOS.");
+                    }else{
+                        System.out.println("ELIMINACION DE UN PRODUCTO.");
+                        System.out.println("SI DESEA ELIMINAR, INGRESE EL CODIGO DEL PRODUCTO A ELIMINAR y LA CANTIDAD A ELIMINAR:");
+                        System.out.print("\nCodigo: ");
+                        String cod = sc.nextLine();
+                        System.out.println("Cantidad:");
+                        String cant = sc.nextLine();
+                        if(!currProv.eliminarProducto(cod, cant)){
+                            System.out.println("NO SE ELIMINO EL PRODUCTO.");
+                        }else{
+                            System.out.println("Producto ha sido eliminado.");
+                        }
+                    }
+                    System.out.println("Retornando al menu...");
                     continue;
                 case "7":
                     
@@ -420,7 +438,36 @@ public class Sistema {
         }
         return busc;
     }
-    
+    public static void actualizarData(){
+        productos.clear();
+        pedidos.clear();
+        productos = new ArrayList<>();
+        pedidos = new ArrayList<>();
+        if(usuarios!=null){
+            for(Usuario u : usuarios){
+                if(u instanceof Proveedor){
+                    Proveedor prov = (Proveedor) u;
+                    ArrayList<Pedido> pedidoList = prov.getPedidos();
+                    ArrayList<Producto> prodList = prov.getOferta();
+                    if(pedidoList != null ){
+                        if(!pedidoList.isEmpty()){
+                            for(Pedido p : pedidoList){
+                                pedidos.add(p);
+                            }
+                        }
+                    }
+                    if(prodList != null){
+                        if(!prodList.isEmpty()){
+                            for(Producto p : prodList){
+                                productos.add(p);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+            
     public static void main(String[] args) {
         Sistema ui = new Sistema();
         ui.inicializarDatos();
