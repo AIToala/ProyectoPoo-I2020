@@ -174,7 +174,7 @@ public class Sistema {
         Proveedor currProv = (Proveedor) u;
         System.out.println("Menu Proveedor");
         String op="";
-        while(!op.equals("4")){
+        while(!op.equals("7")){
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar Información de los pedidos.");
             System.out.println("2. Gestionar estado de los pedidos.");
@@ -217,6 +217,7 @@ public class Sistema {
                     System.out.println("PRODUCTOS REGISTRADOS DEL PROVEEDOR.");
                     if(!currProv.consultarProducto(productos)){
                         System.out.println("NO HAY PRODUCTOS REGISTRADOS...");
+                        continue;
                     }else{
                         System.out.println("Desea editar informacion de algun producto? (Si/No)");
                         String pregunta = sc.nextLine().toLowerCase();
@@ -249,6 +250,7 @@ public class Sistema {
                 case "6":
                     if(!currProv.consultarProducto(productos)){
                         System.out.println("NO HAY PRODUCTOS REGISTRADOS.");
+                        continue;
                     }else{
                         System.out.println("ELIMINACION DE UN PRODUCTO.");
                         System.out.println("SI DESEA ELIMINAR, INGRESE EL CODIGO DEL PRODUCTO A ELIMINAR y LA CANTIDAD A ELIMINAR:");
@@ -265,11 +267,10 @@ public class Sistema {
                     System.out.println("Retornando al menu...");
                     continue;
                 case "7":
-                    
                     break;
                 default:
                     System.out.println("Opcion invalida");
-                    break;
+                    continue;
             }
         }
     }
@@ -278,7 +279,7 @@ public class Sistema {
         System.out.println("Menu Cliente");
         Cliente currCl = (Cliente) u;
         String op = "";
-        while(!op.equals("4")){
+        while(!op.equals("5")){
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar productos disponibles 50km a la redonda");
             System.out.println("2. Agregar producto al carrito de compras.");
@@ -302,6 +303,7 @@ public class Sistema {
                     //agregarAlCarrito();
                     if(!currCl.consultarProducto(getProductosCercanos(currCl))){
                         System.out.println("No hay productos.");
+                        continue;
                     }
                     System.out.println("Desea filtrar los productos por categoria, nombre(Completo o Parcial) y rango del precio del producto.");
                     System.out.println("Si/No:");
@@ -359,14 +361,12 @@ public class Sistema {
                     if(!currCl.consultarPedidos()){
                         System.out.println("No hay pedidos.");
                     }
-                    continue;
                 case "5":
                     //Salir del Menu Proveedor
                     break;
                     
                 default:
                     System.out.println("Entrada no válida, ingrese 1, 2, 3 o 4");
-                    break;
             }
         }
     }
