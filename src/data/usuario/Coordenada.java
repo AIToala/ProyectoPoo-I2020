@@ -19,7 +19,7 @@ public class Coordenada {
         this.longitud = longitud;
     }
     
-    public double calcularDistancia(Coordenada c1, Coordenada c2){
+    public static double calcularDistancia(Coordenada c1, Coordenada c2){
         double lat1 = c1.latitud * (Math.PI/180);
         double lat2 = c2.latitud * (Math.PI/180);
         double long1 = c1.longitud * (Math.PI/180);

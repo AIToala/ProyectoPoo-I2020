@@ -4,10 +4,12 @@
  * and open the template in the editor.
  */
 package data.usuario;
+import Interfaz.Sistema;
 import data.pago.*;
 import data.pedido.Pedido;
 import data.producto.Producto;
 import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author Usuario
@@ -39,14 +41,14 @@ public class Cliente extends Usuario {
     
     
     
-    
+    // Consultar productos de proveedores a 50 km de distancia maxima.
     @Override
     public boolean consultarProducto(ArrayList<Producto> productos){
         if(productos == null){return false;}
         if(productos.isEmpty()){return false;}
         System.out.println("---------------------------------");
         System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
-        for(Producto prod : carrito.getProductos()){
+        for(Producto prod : productos){
             System.out.println("CODIGO     : " + prod.getCodigo());
             System.out.println("NOMBRE     : " + prod.getNombre());
             System.out.println("CATEGORIA  : " + prod.getCategoria());
@@ -66,9 +68,10 @@ public class Cliente extends Usuario {
             System.out.println("FILTROS NO VALIDOS");
             return null;
         }
-        String categoria = dataFiltro.get(0).toLowerCase();
+        String categoria = dataFiltro.get(0).toUpperCase();
         String nombre = dataFiltro.get(1).toLowerCase();
         String rangoPrecio = dataFiltro.get(2);
+        
         double rangoInicial = 0;
         double rangoFinal = 0;
         String[] rangos = null;
@@ -81,18 +84,18 @@ public class Cliente extends Usuario {
         } catch (NumberFormatException | NullPointerException err){
             rangoFinal = Double.MAX_VALUE;
         }
-        if(carrito == null){ return null;}
-        if(carrito.getProductos() == null){ return null;}
-        if(carrito.getProductos().isEmpty()){ return null;}
+        if(Sistema.getProductosCercanos(this) == null){ return null;}
+        if(Sistema.getProductosCercanos(this) == null){ return null;}
+        if(Sistema.getProductosCercanos(this).isEmpty()){ return null;}
         ArrayList<Producto> filtrado = new ArrayList<>();
         for(Producto p : carrito.getProductos()){
-            if(p.getCategoria().equals(categoria) && p.getNombre().contains(nombre) &&
+            if(p.getCategoria().contains(categoria) && p.getNombre().contains(nombre) &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
-            }else if(p.getCategoria().equals(categoria) && p.getNombre().equals("") &&
+            }else if(p.getCategoria().contains(categoria) && nombre.equals("") &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
-            }else if(p.getCategoria().equals("") && p.getNombre().contains(nombre) &&
+            }else if(categoria.equals("") && p.getNombre().contains(nombre) &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
             }else if(nombre.equals("") && categoria.equals("") && p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
@@ -143,6 +146,30 @@ public class Cliente extends Usuario {
         return true;
     }
     
+    public boolean agregarAlCarrito(ArrayList<Producto> filtro, String cod, String cantidad){
+        if(carrito == null){ return false;}
+        if(filtro == null){return false;}
+        if(filtro.isEmpty()){return false;}
+        if(cod.isEmpty()){return false;}
+        if(cantidad.isEmpty()){return false;}
+        int cant = 0;
+        try{
+            cant = Integer.parseInt(cantidad);
+        }catch(NumberFormatException e){
+            return false;
+        }
+        boolean bandera = false;
+        for(Producto p: filtro ){
+            String codigoP = p.getCodigo();
+            if(cod.equals(codigoP)){
+                bandera = true;
+                for(int i=0; i<cant; i++){
+                    carrito.setProductos(p);
+                }
+            }
+        }
+        return bandera;
+    }
     public void verCarrito(){
         if(carrito == null || carrito.getProductos().isEmpty()){ System.out.println("NO HAY PRODUCTOS EN CARRITO");}
         else{
@@ -162,6 +189,33 @@ public class Cliente extends Usuario {
             System.out.println("TOTAL A PAGAR: " + total);
         }
        
+    }
+    //    public Pedido(String codigo, ArrayList<Producto> productosPedidos, 
+    //Cliente cliente, Pago metodoPago, double totalPagar) {
+
+    public ArrayList<Pedido> generarPedido(CarritoCompra carrito){
+        if(carrito==null){return null;}
+        if(carrito.getProductos().isEmpty()){return null;}
+        List<ArrayList<Producto>> listaProdXVendedor = new ArrayList<>();
+        ArrayList<String> proveedores = new ArrayList<>();
+        for(Producto prod : carrito.getProductos()){
+            Proveedor pv = prod.getVendedor();
+            String user = pv.getUser();
+            if(proveedores.contains(user)){
+                proveedores.add(user);
+            }
+        }
+        for(Producto prod:carrito.getProductos()){
+            for(String name: proveedores){
+                if(name.equals(prod.getVendedor().getUser())){
+                    int index = proveedores.indexOf(name);
+                    
+                    //listaProdXVendedor.add(index, prod);
+                }
+            }
+        }
+        
+        return null;
     }
     public double calcularTotal(){
         if(carrito.getProductos() == null){return 0;}
