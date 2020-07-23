@@ -34,8 +34,6 @@ public class PagoTarjeta extends Pago{
             totalAPagar += Double.parseDouble(totalPago);
         }
         String msg = "Hola de parte de AGROSTORENU "+ "\n" +
-                     "Verifica si has realizado las siguientes compras ingresando el siguiente codigo en AGROSTORENU APP\n" +
-                     "\t\t\t" + "COMPRAMEPLS" +
                      "\nGracias por confiar en nosotros, AgroStoreNU.";
         Email e = new Email(emailTo, msg);
         if(e.enviarEmail()){

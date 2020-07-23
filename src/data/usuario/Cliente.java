@@ -9,7 +9,6 @@ import data.pago.*;
 import data.pedido.Pedido;
 import data.producto.Producto;
 import java.util.ArrayList;
-import java.util.List;
 /**
  *
  * @author Usuario
@@ -37,6 +36,10 @@ public class Cliente extends Usuario {
 
     public CarritoCompra getCarrito() {
         return carrito;
+    }
+
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
     }
     
     
@@ -145,27 +148,70 @@ public class Cliente extends Usuario {
         }
         return true;
     }
-    
-    public boolean agregarAlCarrito(ArrayList<Producto> filtro, String cod, String cantidad){
+    public boolean removerPedidosGenerados(ArrayList<Pedido> pedidos){
+        if(this.pedidos == null){return false;}
+        if(this.pedidos.isEmpty()){return false;}
+        if(pedidos == null){return false;}
+        if(pedidos.isEmpty()){return false;}
+        boolean bandera = false;
+        for(Pedido p: this.pedidos){
+            for(Pedido p2: pedidos){
+                if(p.equals(p2)){
+                    bandera = true;
+                    this.pedidos.remove(p2);
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean agregarAlCarrito(String cod, String cantidad){
         if(carrito == null){ return false;}
-        if(filtro == null){return false;}
-        if(filtro.isEmpty()){return false;}
+        if(Sistema.getProductosCercanos(this) == null){return false;}
+        if(Sistema.getProductosCercanos(this).isEmpty()){return false;}
         if(cod.isEmpty()){return false;}
         if(cantidad.isEmpty()){return false;}
-        int cant = 0;
+        ArrayList<Integer> cantidadDisponible = Producto.getCantidadProducto(Sistema.getProductosCercanos(this));
+        ArrayList<Producto> productosU = Producto.getProductosUnicos(Sistema.getProductosCercanos(this));
+        int banderaCant = 0;
+        int agregados = 0;
+        
         try{
-            cant = Integer.parseInt(cantidad);
+            banderaCant = Integer.parseInt(cantidad);
+            agregados = Integer.parseInt(cantidad);
         }catch(NumberFormatException e){
             return false;
         }
+        int index = productosU.indexOf(Producto.getProducto(productosU, cod));
+        int cantDisponible = cantidadDisponible.get(index);
+        Producto deseado = Producto.getProducto(productosU, cod);
+        boolean suficiente = true;
+        if(agregados>cantDisponible){
+            agregados = cantDisponible;
+            suficiente = false;
+        }
         boolean bandera = false;
-        for(Producto p: filtro ){
+        for(Producto p: Sistema.getProductosCercanos(this)){
             String codigoP = p.getCodigo();
             if(cod.equals(codigoP)){
                 bandera = true;
-                for(int i=0; i<cant; i++){
+                for(int i=0; i<agregados; i++){
                     carrito.setProductos(p);
                 }
+                
+            }else if(p.getNombre().equals(deseado.getNombre()) && suficiente == false){
+                int indexOtro = productosU.indexOf(Producto.getProducto(productosU, p.getCodigo()));
+                int cantOtro = cantidadDisponible.get(indexOtro);
+                Producto requerido = Producto.getProducto(productosU, p.getCodigo());
+                if(cantOtro>banderaCant-agregados){
+                    cantOtro = banderaCant-agregados;
+                    suficiente = false;
+                }
+                bandera = true;
+                for(int i=0;i<cantOtro;i++){
+                    carrito.setProductos(p);
+                }
+                agregados += cantOtro;
             }
         }
         return bandera;
@@ -175,7 +221,6 @@ public class Cliente extends Usuario {
         else{
             ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.getProductos());
             ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.getProductos());
-            double total = 0;
             for(Producto p : productosU){
                 System.out.println("---------------------------------");  
                 System.out.println("CODIGO     : " + p.getCodigo());
@@ -184,24 +229,22 @@ public class Cliente extends Usuario {
                 System.out.println("PRECIO     : " + p.getCostoUnitario());
                 System.out.println("SUBTOTAL   : " + p.getCostoUnitario() * cantidad.get(productosU.indexOf(p)));
                 System.out.println("---------------------------------");  
-                total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
+                
             }
-            System.out.println("TOTAL A PAGAR: " + total);
+            System.out.println("TOTAL A PAGAR: " + calcularTotalCarrito());
         }
        
     }
-    //    public Pedido(String codigo, ArrayList<Producto> productosPedidos, 
-    //Cliente cliente, Pago metodoPago, double totalPagar) {
-
-    public ArrayList<Pedido> generarPedido(CarritoCompra carrito){
+    public ArrayList<Pedido> generarPedidos(CarritoCompra carrito, Pago pago){
         if(carrito==null){return null;}
         if(carrito.getProductos().isEmpty()){return null;}
-        List<ArrayList<Producto>> listaProdXVendedor = new ArrayList<>();
+        ArrayList<Pedido> pedidosRealizados = new ArrayList<>();
+        ArrayList<ArrayList<Producto>> listaProdXVendedor = new ArrayList<>();
         ArrayList<String> proveedores = new ArrayList<>();
         for(Producto prod : carrito.getProductos()){
             Proveedor pv = prod.getVendedor();
             String user = pv.getUser();
-            if(proveedores.contains(user)){
+            if(!proveedores.contains(user)){
                 proveedores.add(user);
             }
         }
@@ -209,23 +252,21 @@ public class Cliente extends Usuario {
             for(String name: proveedores){
                 if(name.equals(prod.getVendedor().getUser())){
                     int index = proveedores.indexOf(name);
-                    
-                    //listaProdXVendedor.add(index, prod);
+                    listaProdXVendedor.get(index).add(prod);
                 }
             }
         }
-        
-        return null;
-    }
-    public double calcularTotal(){
-        if(carrito.getProductos() == null){return 0;}
-        if(carrito.getProductos().isEmpty()){return 0;}
-        double total = 0;
-        ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.getProductos());
-        ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.getProductos());
-        for(Producto p : productosU){
-            total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
+        if(listaProdXVendedor.isEmpty()){return null;}
+        int i=1;
+        for(ArrayList<Producto> listaProd : listaProdXVendedor){
+            String cod = Integer.toString(i);
+            Pedido p = new Pedido(cod, listaProd, this, pago, Producto.getTotalAPagar(listaProd));
+            pedidosRealizados.add(p);
+            this.pedidos.add(p);
         }
-        return total;
+        return pedidosRealizados;
+    }
+    public double calcularTotalCarrito(){
+        return Producto.getTotalAPagar(carrito.getProductos());
     }
 }

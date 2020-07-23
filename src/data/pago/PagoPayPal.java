@@ -34,7 +34,8 @@ public class PagoPayPal extends Pago {
         int numero = (int) ((Math.random() * 1000 ) + 100);
         if(numero>=totalAPagar){
             return true;
+        }else{
+            return false;
         }
-        return false;
     }
 }

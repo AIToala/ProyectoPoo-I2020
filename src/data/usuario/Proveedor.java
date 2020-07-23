@@ -53,7 +53,9 @@ public class Proveedor extends Usuario{
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
-
+    public void addPedido(Pedido p){
+        this.pedidos.add(p);
+    }
     
 
         

@@ -30,8 +30,8 @@ public class Email{
         this.mensaje = mensaje;
     }
     
-    public boolean enviarEmail(String mensaje, ArrayList<String> pedido){
-        if(mensaje.isEmpty()){return false;}
+    public static boolean enviarEmailConfirmacion(String correo, ArrayList<String> pedido){
+        if(correo.isEmpty()){return false;}
         if(pedido == null) {return false;}
         if(pedido.isEmpty()){return false;}
         String enviar = "";
@@ -55,7 +55,8 @@ public class Email{
         Session session = Session.getDefaultInstance(props, null);
 
         // Construct the message
-        String to = receptor;
+        String to = correo;
+        String codigo = "BUYMEPLS";
         String subject = "Factura generada por compras de productos en app AGROSTORENU";
         Message msg = new MimeMessage(session);
         try {
@@ -70,7 +71,7 @@ public class Email{
                         "¿Has comprado en AgroStoreNU?\n" +
                         "Verifica si has realizado las siguientes compras:\n" + enviar +
                         "\nSi has realizado estas compras, ingrese el codigo generado en AgroStoreNU y pronto tus productos estaran al pie de su hogar."+
-                        "\t\t" + "\nGracias por confiar en nosotros, AgroStoreNU. ");
+                        "\t\t" + codigo + "\nGracias por confiar en nosotros, AgroStoreNU. ");
             msg.setSentDate(new Date());
 
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));

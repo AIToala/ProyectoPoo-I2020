@@ -9,19 +9,20 @@ import data.producto.Producto;
 import data.usuario.Cliente;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 //- estado: ESTADO = SOLICITADO
 //Poner enum
 
 public class Pedido {
-private String codigo;
-private ArrayList<LocalDateTime> fechas;
-private ArrayList<Producto> productosPedidos;
-private Cliente cliente;
-private Pago metodoPago;
-private double totalPagar;
-private ESTADO estado;
+    private String codigo;
+    private ArrayList<LocalDateTime> fechas;
+    private ArrayList<Producto> productosPedidos;
+    private Cliente cliente;
+    private Pago metodoPago;
+    private double totalPagar;
+    private ESTADO estado;
 
     public Pedido(String codigo, ArrayList<Producto> productosPedidos, Cliente cliente, Pago metodoPago, double totalPagar) {
         this.codigo = codigo;
@@ -91,7 +92,35 @@ private ESTADO estado;
         this.estado = estado;
     }
 
+    @Override
+    public String toString() {
+        String dataProd = "";
+        for(Producto pr : productosPedidos){
+            dataProd += pr.getNombre()+",";
+        }
+        dataProd = dataProd.substring(0, dataProd.lastIndexOf(",")).strip();
+        return codigo + "-" + fechas.get(0) + "-" + dataProd + "-" + cliente + "-" + totalPagar + "-" + estado.name();
+    }
+
     
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pedido other = (Pedido) obj;
+        if (!Objects.equals(this.codigo, other.codigo)) {
+            return false;
+        }
+        return true;
+    }
+
     
     
     

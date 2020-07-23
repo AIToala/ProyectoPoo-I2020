@@ -125,5 +125,28 @@ public class Producto {
         }
         return true;
     }
+    public static Producto getProducto(ArrayList<Producto> prod, String codigo){
+        if(prod == null){return null;}
+        if(prod.isEmpty()){return null;}
+        if(codigo.isBlank() || codigo.equals("")){return null;}
+        ArrayList<Producto> productoU = Producto.getProductosUnicos(prod);
+        for(Producto p : productoU){
+            if(p.getCodigo().equals(codigo)){
+                return p;
+            }
+        }
+        return null;
+    }
+    public static double getTotalAPagar(ArrayList<Producto> prod){
+        if(prod == null){return 0;}
+        if(prod.isEmpty()){return 0;}
+        double total = 0;
+        ArrayList<Producto> productosU = Producto.getProductosUnicos(prod);
+        ArrayList<Integer> cantidad = Producto.getCantidadProducto(prod);
+        for(Producto p : productosU){
+            total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
+        }
+        return total;
+    }
     
 }
