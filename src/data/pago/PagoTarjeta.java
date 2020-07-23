@@ -42,4 +42,26 @@ public class PagoTarjeta extends Pago{
             return true;}
         return false;
     }
+
+    public String getTipoTarjeta() {
+        return tipoTarjeta;
+    }
+
+    public String getNumTarjeta() {
+        return numTarjeta;
+    }
+
+    public String getNombreTitular() {
+        return nombreTitular;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

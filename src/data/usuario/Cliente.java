@@ -5,6 +5,7 @@
  */
 package data.usuario;
 import data.pago.*;
+import data.pedido.Pedido;
 import data.producto.Producto;
 import java.util.ArrayList;
 /**
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class Cliente extends Usuario {
     private Pago formaPago;
     private CarritoCompra carrito;
+    private ArrayList<Pedido> pedidos;
 
     public Cliente(String user, String password, String nombre, String id, String direccion, Coordenada ubicacion, String correo, Pago formaPago) {
         super(user, password, nombre, id, direccion, ubicacion, correo);
@@ -105,6 +107,39 @@ public class Cliente extends Usuario {
     }
     @Override
     public boolean consultarPedidos(){
+        if(pedidos == null){return false;}
+        if(pedidos.isEmpty()){return false;}
+        System.out.println("---------------------------------");
+        System.out.println("PEDIDOS REALIZADO AL PROVEEDOR " + this.getUser());
+        for(Pedido pedido : pedidos){
+            System.out.println("CODIGO     : " + pedido.getCodigo()+ "|");
+            System.out.println("FECHA INICIO   : " + pedido.getFechas().get(0));
+            System.out.println("\nTOTAL DEL PEDIDO  : " + pedido.getTotalPagar());
+            String pago = "";
+            if(pedido.getMetodoPago() instanceof PagoPayPal){
+                pago = "PayPal";
+            }
+            else if(pedido.getMetodoPago() instanceof PagoTarjeta){
+                PagoTarjeta pt = (PagoTarjeta) pedido.getMetodoPago();
+                String numTarjeta = pt.getNumTarjeta();
+                pago = "Tarjeta "+numTarjeta;
+            }
+            System.out.println("FORMA DE PAGO  : " + pago);
+            System.out.println("PRODUCTOS:" + pedido.getProductosPedidos() + "|");
+            if(pedido.getProductosPedidos() != null || !pedido.getProductosPedidos().isEmpty()){
+                ArrayList<Producto> productosU = Producto.getProductosUnicos(pedido.getProductosPedidos());
+                ArrayList<Integer> cantidad = Producto.getCantidadProducto(pedido.getProductosPedidos());
+                System.out.println("CODIGO | NOMBRE | CANTIDAD");
+                for(Producto p : productosU){
+                    int index = productosU.indexOf(p);
+                    System.out.println(p.getCodigo()+"|"+p.getNombre()+"|"+cantidad.get(index));                    
+                }
+            }else{
+                System.out.println("No hay productos...");
+            }
+            System.out.println("ESTADO DEL PEDIDO: "+pedido.getEstado());
+            System.out.println("---------------------------------");
+        }
         return true;
     }
     
@@ -126,7 +161,7 @@ public class Cliente extends Usuario {
             }
             System.out.println("TOTAL A PAGAR: " + total);
         }
-        
+       
     }
     public double calcularTotal(){
         if(carrito.productos == null){return 0;}
