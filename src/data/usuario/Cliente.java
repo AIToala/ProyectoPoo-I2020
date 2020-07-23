@@ -46,7 +46,7 @@ public class Cliente extends Usuario {
         if(productos.isEmpty()){return false;}
         System.out.println("---------------------------------");
         System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
-        for(Producto prod : carrito.productos){
+        for(Producto prod : carrito.getProductos()){
             System.out.println("CODIGO     : " + prod.getCodigo());
             System.out.println("NOMBRE     : " + prod.getNombre());
             System.out.println("CATEGORIA  : " + prod.getCategoria());
@@ -82,10 +82,10 @@ public class Cliente extends Usuario {
             rangoFinal = Double.MAX_VALUE;
         }
         if(carrito == null){ return null;}
-        if(carrito.productos == null){ return null;}
-        if(carrito.productos.isEmpty()){ return null;}
+        if(carrito.getProductos() == null){ return null;}
+        if(carrito.getProductos().isEmpty()){ return null;}
         ArrayList<Producto> filtrado = new ArrayList<>();
-        for(Producto p : carrito.productos){
+        for(Producto p : carrito.getProductos()){
             if(p.getCategoria().equals(categoria) && p.getNombre().contains(nombre) &&
                p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
                 filtrado.add(p);
@@ -144,10 +144,10 @@ public class Cliente extends Usuario {
     }
     
     public void verCarrito(){
-        if(carrito == null || carrito.productos.isEmpty()){ System.out.println("NO HAY PRODUCTOS EN CARRITO");}
+        if(carrito == null || carrito.getProductos().isEmpty()){ System.out.println("NO HAY PRODUCTOS EN CARRITO");}
         else{
-            ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.productos);
-            ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.productos);
+            ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.getProductos());
+            ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.getProductos());
             double total = 0;
             for(Producto p : productosU){
                 System.out.println("---------------------------------");  
@@ -164,11 +164,11 @@ public class Cliente extends Usuario {
        
     }
     public double calcularTotal(){
-        if(carrito.productos == null){return 0;}
-        if(carrito.productos.isEmpty()){return 0;}
+        if(carrito.getProductos() == null){return 0;}
+        if(carrito.getProductos().isEmpty()){return 0;}
         double total = 0;
-        ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.productos);
-        ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.productos);
+        ArrayList<Producto> productosU = Producto.getProductosUnicos(carrito.getProductos());
+        ArrayList<Integer> cantidad = Producto.getCantidadProducto(carrito.getProductos());
         for(Producto p : productosU){
             total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
         }

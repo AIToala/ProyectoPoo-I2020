@@ -291,11 +291,12 @@ public class Sistema {
             switch(op){
                 case "1":
                     //consultarProductos();
-                    
+                    if(!currCl.consultarProducto(productos)){
+                        System.out.println("No hay productos");
+                    }   
                     continue;
                 case "2":
-                    //VerCarritoCompra();
-                    
+                    //VerCarritoCompra()
                     continue;
                 case "3":
                     //System.out.println(Arrays.toString(cliente.compra.getPedidos()));
@@ -467,6 +468,77 @@ public class Sistema {
             }
         }
     }
+    
+    public void menuCarritoCompra(Usuario u){
+       System.out.println("Menu Carrito de compras");
+        Cliente currCl = (Cliente) u;
+        String op = "";
+        while(!op.equals("4")){
+            System.out.println("------------------------------------------");
+            System.out.println("1. Consultar carrito de compras");
+            System.out.println("2.  Eliminar producto de carrito de compras");
+            System.out.println("3. Comprar");
+            System.out.println("4. Salir");
+            System.out.println("------------------------------------------");
+            System.out.print("Ingrese una opcion: ");
+
+            op = sc.nextLine();
+            
+            //hace una opcion de acuerdo a lo ingresado por el proveedor
+            switch(op){
+                case "1":
+                    if(!currCl.consultarProducto(currCl.getCarrito().getProductos())){
+                        System.out.println("No hay productos");
+                    }
+                    System.out.println("Retornando al menú...");
+                    continue;
+                case "2":
+                    if(!currCl.consultarProducto(currCl.getCarrito().getProductos())){
+                        System.out.println("No hay productos");
+                    }
+                    else{
+                        System.out.println("Ingrese el código del producto que desea eliminar");
+                        String cod = sc.nextLine();
+                        if(!currCl.getCarrito().eliminarProdCarrito(cod)){
+                            System.out.println("No se eliminó el producto");
+                        }
+                    }
+                    System.out.println("Retornando al menú...");
+                    continue;
+                case "3":
+                    if(!currCl.consultarProducto(currCl.getCarrito().getProductos())){
+                        System.out.println("No hay productos");
+                    }
+                    else{
+                    //System.out.println(Arrays.toString(cliente.compra.getPedidos()));
+                    }
+                    System.out.println("Retornando al menú...");
+                    continue;
+                    
+                case "4":
+                    //Salir del Menu Proveedor
+                    break;
+                    
+                default:
+                    System.out.println("Entrada no válida, ingrese 1, 2, 3 o 4");
+                    break;
+            }
+        } 
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
             
     public static void main(String[] args) {
         Sistema ui = new Sistema();

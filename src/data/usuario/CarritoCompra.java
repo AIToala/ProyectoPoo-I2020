@@ -12,7 +12,7 @@ import Interfaz.Sistema;
  * @author Usuario
  */
 public class CarritoCompra {
-    ArrayList<Producto> productos;
+    private ArrayList<Producto> productos;
     
     public CarritoCompra(){
         this.productos = new ArrayList<>();
@@ -34,16 +34,29 @@ public class CarritoCompra {
     }
   
     public boolean eliminarProdCarrito(String codigo){
+        if(codigo==""){return false;}
+        if(productos==null){return false;}
+        if(productos.isEmpty()){return false;}
+        boolean bandera = false;
         for(int i = 0; i<productos.size(); i++){
             Producto p = productos.get(i);
             String cod = p.getCodigo();
             if(codigo.equals(cod)){
                 productos.remove(i);
-                return true;
+                bandera = true;
             }
         }
-        return false;
+        return bandera;
+    }
+
+    public ArrayList<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(ArrayList<Producto> productos) {
+        this.productos = productos;
     }
     
+    
  
-    }
+}

@@ -215,6 +215,7 @@ public class Proveedor extends Usuario{
             oferta.add(newProd);
             
         }
+        sc.close();
         return true;
     }
     
@@ -260,6 +261,7 @@ public class Proveedor extends Usuario{
                 }
             }
         }
+        sc.close();
         return true;
     }
     public boolean eliminarProducto(String cod, String cantidad){
@@ -348,6 +350,7 @@ public class Proveedor extends Usuario{
                 
             }
         }
+        sc.close();
         return true;
     }
 }
