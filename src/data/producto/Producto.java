@@ -25,6 +25,7 @@ public class Producto {
         this.descripcion = descripcion;
         this.categorias = categoria;
         this.costoUnitario = costo;
+        //vendedor.addProducto(this);
     }
 
     public String getCodigo() {
@@ -69,6 +70,10 @@ public class Producto {
             s.add(cat.name());
         }
         return s;
+    }
+    
+    public ArrayList<CATEGORIA> getCATEGORIAS() {
+        return categorias;
     }
 
     public void setCategoria(CATEGORIA categoria) {

@@ -57,6 +57,9 @@ public class Proveedor extends Usuario{
         this.pedidos.add(p);
     }
     
+    public void addProducto(Producto p){
+        this.oferta.add(p);
+    }
 
         
     @Override
@@ -65,7 +68,7 @@ public class Proveedor extends Usuario{
         if(productos.isEmpty()){return false;}
         System.out.println("---------------------------------");
         System.out.println("PRODUCTOS DEL PROVEEDOR " + this.getUser());
-        for(Producto prod : oferta){
+        for(Producto prod : productos){
             System.out.print("\nCODIGO     : " + prod.getCodigo() + "|");
             System.out.print("\nNOMBRE     : " + prod.getNombre() + "|");
             System.out.print("\nCATEGORIA  : " + prod.getCategoria() + "|");
@@ -83,7 +86,7 @@ public class Proveedor extends Usuario{
             System.out.println("FILTROS NO VALIDOS");
             return null;
         }
-        String categoria = dataFiltro.get(0);
+        String categoria = dataFiltro.get(0).toUpperCase();
         String nombre = dataFiltro.get(1).toLowerCase();
         if(oferta == null){
             return null;
@@ -93,14 +96,19 @@ public class Proveedor extends Usuario{
         }
         ArrayList<Producto> filtrado = new ArrayList<>();
         for(Producto p : oferta){
-            if(p.getCategoria().equals(categoria.toLowerCase()) && p.getNombre().toLowerCase().contains(nombre)){
+            //System.out.println(p.getCategoria().get(0));
+            if(p.getCategoria().contains(categoria) && p.getNombre().toLowerCase().contains(nombre) && !nombre.isEmpty()){
                 filtrado.add(p);
-            }else if(p.getCategoria().equals(categoria.toLowerCase()) && nombre.equals("")){
+                System.out.println("if 1");
+            }else if(p.getCategoria().contains(categoria) && nombre.equals("")){
                 filtrado.add(p);
-            }else if(p.getNombre().contains(nombre) && categoria.equals("")){
+                System.out.println("if 2");
+            }else if(p.getNombre().toLowerCase().contains(nombre) && categoria.equals("")){
                 filtrado.add(p);
+                System.out.println("if 3");
             }else if(nombre.equals("") && categoria.equals("")){
                 filtrado.add(p);
+                System.out.println("if 4");
             }
         }
         if(filtrado.isEmpty()){
@@ -166,7 +174,7 @@ public class Proveedor extends Usuario{
         while(!salir){
             System.out.println("Ingrese el numero de la categoria a añadir al producto "
                     + "\n(Categorias disponibles\n1. CARNICO.\n2. VEGETAL\n3. FRUTA\n4. LACTEO\n5. CONSERVA");
-            String cat = sc.nextLine().toUpperCase();
+            String cat = sc.nextLine();
             switch(cat){
                 case "1":
                     elegida = CATEGORIA.CARNICO;
@@ -179,7 +187,8 @@ public class Proveedor extends Usuario{
                 case "5":
                     elegida = CATEGORIA.CONSERVA;
                 default:
-                    System.out.println("Elja correctamente...");
+                    System.out.println("Elija correctamente...");
+                    salir = true;
             }
             if(elegida != null){categorias.add(elegida);}
             System.out.println("Desea añadir otra categoria mas?: (Si/No)");
@@ -198,7 +207,7 @@ public class Proveedor extends Usuario{
         double costoU;
         try{
             costoU = Double.parseDouble(precio);
-        }catch(NumberFormatException e){
+        }catch(Exception e){
             System.out.println("Valor no numerico.");
             return false;
         }
@@ -207,7 +216,7 @@ public class Proveedor extends Usuario{
         int cantidad;
         try{
             cantidad = Integer.parseInt(cant);
-        }catch(NumberFormatException e){
+        }catch(Exception e){
             System.out.println("Valor no numerico");
             return false;
         }
@@ -223,7 +232,6 @@ public class Proveedor extends Usuario{
     
     public boolean gestionarPedidos(){
         if(!consultarPedidos()){
-            System.out.println("NO HAY PEDIDOS...");
             return false;
         }
         Scanner sc = new Scanner(System.in);
@@ -292,67 +300,21 @@ public class Proveedor extends Usuario{
         }
         return borro;
     }
-    public boolean editarProducto(String cod){
-        if(cod.isEmpty()){return false;}
+    public boolean editarProducto(Producto prod){
+        if(prod == null){return false;}
         if(oferta == null){return false;}
         if(oferta.isEmpty()){return false;}
-        Scanner sc = new Scanner(System.in);
-        for(Producto prod: oferta){
-            if(prod.getCodigo().equals(cod)){
-                System.out.println("EDICION DE PRODUCTO (SI EL CAMPO SE DEJA VACIO, NO SE EDITARA)");
-                System.out.println("Nombre Actual del producto: " + prod.getNombre());
-                System.out.println("Ingrese nuevo nombre del producto: ");
-                String name = sc.nextLine();
-                prod.setNombre(name);
-                System.out.println("Descripcion actual del producto: " + prod.getDescripcion());
-                System.out.println("Ingrese nueva descripcion del producto: ");
-                String descr = sc.nextLine();
-                prod.setDescripcion(descr);
-                System.out.println("CATEGORIAS actuales del producto: " + prod.getCategoria().toString());
-                boolean salir = false;
-                System.out.println("Desea borrar las categorias del producto para luego editar?:"
-                        + "(hacer esto borrara las categorias registrada del producto) (si/no)");
-                if(sc.nextLine().toLowerCase().equals("si")){
-                    prod.clearCategoria();
-                }
-                System.out.println("Editando categorias -----");
-                while(!salir){
-                    System.out.println("Ingrese el numero de la categoria a añadir al producto "
-                            + "\n(Categorias disponibles\n1. CARNICO.\n2. VEGETAL\n3. FRUTA\n4. LACTEO\n5. CONSERVA");
-                    String cat = sc.nextLine().toUpperCase();
-                    switch(cat){
-                        case "1":
-                            prod.setCategoria(CATEGORIA.CARNICO);
-                        case "2":
-                            prod.setCategoria(CATEGORIA.VEGETAL);
-                        case "3":
-                            prod.setCategoria(CATEGORIA.FRUTA);
-                        case "4":
-                            prod.setCategoria(CATEGORIA.LACTEO);
-                        case "5":
-                            prod.setCategoria(CATEGORIA.CONSERVA);
-                        default:
-                            System.out.println("Elja correctamente...");
-                    }
-                    System.out.println("Desea añadir otra categoria mas?: (Si/No)");
-                    String resp = sc.nextLine().toLowerCase();
-                    if(resp.equals("si")){
-                        salir = false;
-                    }else{
-                        salir = true;
-                    }
-                }
-                System.out.println("Ingrese nuevo costo Unitario del producto: ");
-                String costoU = sc.nextLine();
-                try{
-                    prod.setCostoUnitario(Double.parseDouble(costoU));
-                }catch(NumberFormatException e){
-                    System.out.println("Dato no permitido se dejara producto con costo actual.");
-                }
+        for(Producto prodOferta: oferta){
+            if(prod.getCodigo().equals(prodOferta.getCodigo())){
+                prodOferta.setNombre(prod.getNombre());
+                prodOferta.setDescripcion(prod.getDescripcion());
+                for (CATEGORIA cat : prod.getCATEGORIAS()){
+                    prodOferta.setCategoria(cat);
+                }        
+                prodOferta.setCostoUnitario(prod.getCostoUnitario());
                 
             }
         }
-        sc.close();
         return true;
     }
 }

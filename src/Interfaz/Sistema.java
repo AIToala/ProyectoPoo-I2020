@@ -37,25 +37,34 @@ public class Sistema {
     Proveedor pv1 = new Proveedor("finca_guayas","030245","Gabriela","2","Samanes",new Coordenada(16,20), "andrestoala2013@gmail.com",
                                     "0123456789");
     Proveedor pv2 = new Proveedor("almacenes_aki","040568","Jerry","3","Alborada",new Coordenada(20,13), "jlandiva@espol.edu.ec", "0967600799");
-    Proveedor pv3 = new Proveedor("","093456","Joel","4","Sur",new Coordenada(100,20),"joelalvarado2000g@gmail.com","0968154486");
+    Proveedor pv3 = new Proveedor("joel_SA","093456","Joel","4","Sur",new Coordenada(100,20),"joelalvarado2000g@gmail.com","0968154486");
     Producto p0  = new Producto("100", pv1, "Zanahoria", "Vegetal para ceguera", new ArrayList<CATEGORIA>(), 0.50);
     p0.setCategoria(CATEGORIA.VEGETAL);
     Producto p1  = new Producto("200", pv1, "Papa", "Vegetal para comer", new ArrayList<CATEGORIA>(), 1);
     p1.setCategoria(CATEGORIA.VEGETAL);
     Producto p2  = new Producto("300", pv1, "Piña", "Para mayor placer", new ArrayList<CATEGORIA>(), 2);
     p2.setCategoria(CATEGORIA.FRUTA);
+    pv1.addProducto(p0);
+    pv1.addProducto(p1);
+    pv1.addProducto(p2);
     Producto p3  = new Producto("400", pv2, "Manzana", "Para desayuno", new ArrayList<CATEGORIA>(), 10);
     p3.setCategoria(CATEGORIA.FRUTA);
     Producto p4  = new Producto("500", pv2, "Queso", "Para andar queso", new ArrayList<CATEGORIA>(), 0.75);
     p4.setCategoria(CATEGORIA.LACTEO);
     Producto p5  = new Producto("600", pv2, "Carne", "Proteína", new ArrayList<CATEGORIA>(), 5);
     p5.setCategoria(CATEGORIA.CARNICO);
+    pv2.addProducto(p3);
+    pv2.addProducto(p4);
+    pv2.addProducto(p5);
     Producto p6  = new Producto("700", pv3, "Zanahoria", "Vegetal para ceguera", new ArrayList<CATEGORIA>(), 1);
     p6.setCategoria(CATEGORIA.VEGETAL);
     Producto p7  = new Producto("800", pv3, "Durazno en lata", "Pa la pandemia", new ArrayList<CATEGORIA>(), 15);
     p7.setCategoria(CATEGORIA.CONSERVA);
     Producto p8  = new Producto("900", pv3, "Leche de burra", "Huesos sanos y fuertes :v", new ArrayList<CATEGORIA>(), 20);
     p8.setCategoria(CATEGORIA.LACTEO);
+    pv3.addProducto(p6);
+    pv3.addProducto(p7);
+    pv3.addProducto(p8);
     usuarios.add(pv1);
     usuarios.add(pv2);
     usuarios.add(pv3);
@@ -63,6 +72,7 @@ public class Sistema {
     }
     //menu Principal
     public void menu(){
+        actualizarData();
         System.out.println("Bienvenido a AgroStoreNU");
         String op="";
         while(!op.equals("3")){
@@ -193,11 +203,13 @@ public class Sistema {
     }
     //menu Proveedor
     public void menuProveedor(Usuario u){
-        Sistema.actualizarData();
+        
         Proveedor currProv = (Proveedor) u;
         System.out.println("Menu Proveedor");
         String op="";
         while(!op.equals("7")){
+            op="";
+            Sistema.actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar Información de los pedidos.");
             System.out.println("2. Gestionar estado de los pedidos.");
@@ -217,29 +229,30 @@ public class Sistema {
                     if(!currProv.consultarPedidos()){
                         System.out.println("NO HAY PEDIDOS...");
                     }
-                    continue;
+                    
                 case "2":
                     if(!currProv.gestionarPedidos()){
                         System.out.println("NO HAY PEDIDOS...");
                     }
                     System.out.println("Retornando al menu...");
-                    continue;
+                    
                 case "3":
                     if(!currProv.registrarProducto()){
                         System.out.println("HUBO UN ERROR AL REGISTRAR EL PRODUCTO.");
                     }
-                    continue;
+
                 case "4":
                     //Menu CONSULTAR Y EDITAR INFORMACIÓN DE LOS PRODUCTOS REGISTRADOS
-                    if(!currProv.consultarProducto(productos)){
+                    if(!currProv.consultarProducto(currProv.getOferta())){
                         System.out.println("NO HAY PRODUCTOS REGISTRADOS...");
                     }
                     System.out.println("Retornando al menu...");
-                    continue;
+                    
                 case "5":
                     System.out.println("PRODUCTOS REGISTRADOS DEL PROVEEDOR.");
-                    if(!currProv.consultarProducto(productos)){
+                    if(!currProv.consultarProducto(currProv.getOferta())){
                         System.out.println("NO HAY PRODUCTOS REGISTRADOS...");
+                    
                         continue;
                     }else{
                         System.out.println("Desea editar informacion de algun producto? (Si/No)");
@@ -256,10 +269,72 @@ public class Sistema {
                             dataFiltro.add(categoria);dataFiltro.add(nombre);
                             ArrayList<Producto> filtro = currProv.filtrarProducto(dataFiltro);
                             //hacer clear en consola
+                            
                             if(currProv.consultarProducto(filtro)){
+                                nombre = "";
+                                String descr = "";
+                                ArrayList<CATEGORIA> categorias = new ArrayList<>();
+                                String costoU = "";
                                 System.out.println("Ingrese codigo del producto a editar: ");
                                 String cod = sc.nextLine();
-                                if(!currProv.editarProducto(cod)){
+                                double costo = 0;
+                                for(Producto prod: currProv.getOferta()){
+                                    if(prod.getCodigo().equals(cod)){
+                                        System.out.println("EDICION DE PRODUCTO (SI EL CAMPO SE DEJA VACIO, NO SE EDITARA)");
+                                        System.out.println("Nombre Actual del producto: " + prod.getNombre());
+                                        System.out.println("Ingrese nuevo nombre del producto: ");
+                                        String name = sc.nextLine();
+                                        prod.setNombre(name);
+                                        System.out.println("Descripcion actual del producto: " + prod.getDescripcion());
+                                        System.out.println("Ingrese nueva descripcion del producto: ");
+                                        descr = sc.nextLine();
+                                        prod.setDescripcion(descr);
+                                        System.out.println("CATEGORIAS actuales del producto: " + prod.getCategoria().toString());
+                                        boolean salir = false;
+                                        System.out.println("Desea borrar las categorias del producto para luego editar?:"
+                                                + "(hacer esto borrara las categorias registrada del producto) (si/no)");
+                                        if(sc.nextLine().toLowerCase().equals("si")){
+                                            prod.clearCategoria();
+                                        }
+                                        System.out.println("Editando categorias -----");
+                                        while(!salir){
+                                            System.out.println("Ingrese el numero de la categoria a añadir al producto "
+                                                    + "\n(Categorias disponibles\n1. CARNICO.\n2. VEGETAL\n3. FRUTA\n4. LACTEO\n5. CONSERVA");
+                                            String cat = sc.nextLine().toUpperCase();
+                                            switch(cat){
+                                                case "1":
+                                                    categorias.add(CATEGORIA.CARNICO);
+                                                case "2":
+                                                    categorias.add(CATEGORIA.VEGETAL);
+                                                case "3":
+                                                    categorias.add(CATEGORIA.FRUTA);
+                                                case "4":
+                                                    categorias.add(CATEGORIA.LACTEO);
+                                                case "5":
+                                                    categorias.add(CATEGORIA.CONSERVA);
+                                                default:
+                                                    System.out.println("Elja correctamente...");
+                                            }
+                                            System.out.println("Desea añadir otra categoria mas?: (Si/No)");
+                                            String resp = sc.nextLine().toLowerCase();
+                                            if(resp.equals("si")){
+                                                salir = false;
+                                            }else{
+                                                salir = true;
+                                            }
+                                        }
+                                        System.out.println("Ingrese nuevo costo Unitario del producto: ");
+                                        costoU = sc.nextLine();
+                                        try{
+                                            costo = Double.parseDouble(costoU);
+                                        }catch(NumberFormatException e){
+                                            System.out.println("Dato no permitido se dejara producto con costo actual.");
+                                        }
+
+                                    }
+                                }
+                                Producto prod = new Producto(cod, currProv, nombre, descr, categorias, costo);
+                                if(!currProv.editarProducto(prod)){
                                     System.out.println("Producto no fue editado...");
                                 }else{
                                     System.out.println("Producto editado con exito.");
@@ -268,16 +343,17 @@ public class Sistema {
                         }
                     }
                     System.out.println("Retornando al menu...");
-                    continue;
+                    
                     
                 case "6":
-                    if(!currProv.consultarProducto(productos)){
+                    if(!currProv.consultarProducto(currProv.getOferta())){
                         System.out.println("NO HAY PRODUCTOS REGISTRADOS.");
+                    
                         continue;
                     }else{
                         System.out.println("ELIMINACION DE UN PRODUCTO.");
                         System.out.println("SI DESEA ELIMINAR, INGRESE EL CODIGO DEL PRODUCTO A ELIMINAR y LA CANTIDAD A ELIMINAR:");
-                        System.out.print("\nCodigo: ");
+                        System.out.println("\nCodigo: ");
                         String cod = sc.nextLine();
                         System.out.println("Cantidad:");
                         String cant = sc.nextLine();
@@ -288,13 +364,14 @@ public class Sistema {
                         }
                     }
                     System.out.println("Retornando al menu...");
-                    continue;
+                    
                 case "7":
                     break;
                 default:
                     System.out.println("Opcion invalida");
-                    continue;
+                    
             }
+            sc.close();
         }
     }
     //menu Cliente
