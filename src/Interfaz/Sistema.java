@@ -483,6 +483,7 @@ public class Sistema {
                                     if(!Email.enviarEmailConfirmacion(currCl.getCorreo(), Sistema.PedidoEmail(pedidos))){
                                         System.out.println("CORREO DE CONFIRMACION NO ENVIADO...");
                                         currCl.removerPedidosGenerados(pedidos);
+                                       
                                     }else{
                                         for(int i=0;i<3;i++){
                                             System.out.println("Ingrese codigo de confirmacion de compra...");
@@ -667,14 +668,7 @@ public class Sistema {
         productos = new ArrayList<>();
         pedidos = new ArrayList<>();
         if(usuarios!=null){
-            for(Usuario u:usuarios){
-                if(u instanceof Cliente){
-                    Cliente c = (Cliente) u;
-                    for(Pedido p:c.getPedidos()){
-                        Sistema.getProveedor(p.getProductosPedidos().get(0).getVendedor().getUser()).addPedido(p);
-                    }
-                }
-            }
+            
             for(Usuario u : usuarios){
                 if(u instanceof Proveedor){
                     Proveedor prov = (Proveedor) u;

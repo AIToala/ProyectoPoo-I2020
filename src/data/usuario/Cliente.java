@@ -154,11 +154,13 @@ public class Cliente extends Usuario {
         if(pedidos == null){return false;}
         if(pedidos.isEmpty()){return false;}
         boolean bandera = false;
-        for(Pedido p: this.pedidos){
+        for(Pedido p: this.pedidos){ //Podría ser redundante. Revisar luego. 
             for(Pedido p2: pedidos){
                 if(p.equals(p2)){
+                    Proveedor prov = p2.getProductosPedidos().get(0).getVendedor();
                     bandera = true;
                     this.pedidos.remove(p2);
+                    prov.getPedidos().remove(p2);
                 }
             }
         }
@@ -259,10 +261,14 @@ public class Cliente extends Usuario {
         if(listaProdXVendedor.isEmpty()){return null;}
         int i=Sistema.cantidadPedidos() + 1;
         for(ArrayList<Producto> listaProd : listaProdXVendedor){
+            Proveedor prov = listaProd.get(0).getVendedor();
             String cod = Integer.toString(i);
             Pedido p = new Pedido(cod, listaProd, this, pago, Producto.getTotalAPagar(listaProd));
             pedidosRealizados.add(p);
+            
             this.pedidos.add(p);
+            prov.addPedido(p);
+            
             i++;
         }
         return pedidosRealizados;
