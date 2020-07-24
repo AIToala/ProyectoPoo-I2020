@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package data.usuario;
+import Interfaz.Sistema;
 import data.pedido.ESTADO;
 import data.producto.Producto;
 import data.pedido.Pedido;
@@ -72,7 +73,7 @@ public class Proveedor extends Usuario{
             System.out.print("\nCODIGO     : " + prod.getCodigo() + "|");
             System.out.print("\nNOMBRE     : " + prod.getNombre() + "|");
             System.out.print("\nCATEGORIA  : " + prod.getCategoria() + "|");
-            System.out.println("---------------------------------");
+            System.out.println("\n---------------------------------");
         }
         return true;
     }
@@ -99,16 +100,12 @@ public class Proveedor extends Usuario{
             //System.out.println(p.getCategoria().get(0));
             if(p.getCategoria().contains(categoria) && p.getNombre().toLowerCase().contains(nombre) && !nombre.isEmpty()){
                 filtrado.add(p);
-                System.out.println("if 1");
             }else if(p.getCategoria().contains(categoria) && nombre.equals("")){
                 filtrado.add(p);
-                System.out.println("if 2");
             }else if(p.getNombre().toLowerCase().contains(nombre) && categoria.equals("")){
                 filtrado.add(p);
-                System.out.println("if 3");
             }else if(nombre.equals("") && categoria.equals("")){
                 filtrado.add(p);
-                System.out.println("if 4");
             }
         }
         if(filtrado.isEmpty()){
@@ -153,18 +150,21 @@ public class Proveedor extends Usuario{
     
     public boolean registrarProducto(){
         if(oferta == null){this.oferta = new ArrayList<>();}
-        ArrayList<Producto> productosU = Producto.getProductosUnicos(oferta);
         Scanner sc = new Scanner(System.in);
-        if(productosU == null){ productosU = new ArrayList<>();}
         System.out.println("REGISTRANDO NUEVO PRODUCTO.");
         System.out.println("Ingrese codigo unico de su producto a registrar: ");
         String codigo = sc.nextLine();
-        if(!Producto.esProductoUnico(oferta, codigo)){
-            System.out.println("El codigo ingresado ya existe. Ingrese nuevamente.");
+        if(!Producto.esProductoUnico(Sistema.productos, codigo)){
+            System.out.println("El codigo ingresado ya existe dentro del sistema. Ingrese nuevamente.");
             return false;
         }
-        System.out.println("Ingrese nombre del producto:");
-        String nombre = sc.nextLine();
+        boolean valida = false;
+        while(!valida){
+            System.out.println("Ingrese nombre del producto:");
+            nombre = sc.nextLine();
+            if(nombre.equals("")){System.out.println("Por favor ingrese un nombre valido.");}
+            else{valida=true;}
+        }
         System.out.println("Ingrese breve descripcion del producto:");
         String descr = sc.nextLine();
         System.out.println("ESCOJA LAS CATEGORIAS A LAS QUE PERTENECE EL PRODUCTO.");
@@ -178,36 +178,39 @@ public class Proveedor extends Usuario{
             switch(cat){
                 case "1":
                     elegida = CATEGORIA.CARNICO;
+                    break;
                 case "2":
                     elegida = CATEGORIA.VEGETAL;
+                    break;
                 case "3":
                     elegida = CATEGORIA.FRUTA;
+                    break;
                 case "4":
                     elegida = CATEGORIA.LACTEO;
+                    break;
                 case "5":
                     elegida = CATEGORIA.CONSERVA;
+                    break;
                 default:
                     System.out.println("Elija correctamente...");
-                    salir = true;
             }
             if(elegida != null){categorias.add(elegida);}
             System.out.println("Desea añadir otra categoria mas?: (Si/No)");
             String resp = sc.nextLine().toLowerCase();
             if(resp.equals("si")){
                 salir = false;
-            }else{
+            }else if(resp.equals("no") && elegida==null ){
+                if(elegida==null){System.out.println("Ingrese por lo menos una categoria.");}
+            }else if(resp.equals("no")){
                 salir = true;
             }
-        }
-        if(elegida == null){
-            elegida = CATEGORIA.CONSERVA;
         }
         System.out.println("Ingrese costo Unitario del producto:");
         String precio = sc.nextLine();
         double costoU;
         try{
             costoU = Double.parseDouble(precio);
-        }catch(Exception e){
+        }catch(NumberFormatException e){
             System.out.println("Valor no numerico.");
             return false;
         }
@@ -216,17 +219,16 @@ public class Proveedor extends Usuario{
         int cantidad;
         try{
             cantidad = Integer.parseInt(cant);
-        }catch(Exception e){
+        }catch(NumberFormatException e){
             System.out.println("Valor no numerico");
             return false;
         }
-        
-        for(int i=0; i<cantidad;i++){
+        int i=0;
+        while(i<cantidad){
             Producto newProd = new Producto(codigo, this, nombre, descr, categorias, costoU); 
             oferta.add(newProd);
-            
+            i++;
         }
-        sc.close();
         return true;
     }
     
@@ -287,18 +289,19 @@ public class Proveedor extends Usuario{
         if(oferta.isEmpty()){return false;}
         int i = 0;
         boolean borro = false;
-        for(Producto prod : oferta){
-            if(i<cant){
-                if(prod.getCodigo().equals(cod)){
-                    oferta.remove(prod);
-                    borro = true;
-                    i++;
-                }
-            }else{
-                break;
+        int cantidadEnOferta = Producto.getCantidadProductoUnico(oferta, cod);
+        if(cant <= cantidadEnOferta){
+            while(i<cant){
+                oferta.remove(Producto.getProducto(oferta, cod));
+                i++;
+            }
+        }else if(cant>cantidadEnOferta){
+            while(i<cantidadEnOferta){
+                oferta.remove(Producto.getProducto(oferta, cod));
+                i++;
             }
         }
-        return borro;
+        return i>0;
     }
     public boolean editarProducto(Producto prod){
         if(prod == null){return false;}

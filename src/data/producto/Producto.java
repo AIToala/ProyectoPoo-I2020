@@ -25,7 +25,6 @@ public class Producto {
         this.descripcion = descripcion;
         this.categorias = categoria;
         this.costoUnitario = costo;
-        //vendedor.addProducto(this);
     }
 
     public String getCodigo() {
@@ -97,9 +96,11 @@ public class Producto {
         if(prod == null){return null;}
         if(prod.isEmpty()){return null;}
         ArrayList<Integer> cantidad = new ArrayList<>();
+        ArrayList<Producto> productoU = new ArrayList<>();
         for(Producto p : prod){
-            if(!prod.contains(p)){
+            if(!productoU.contains(p)){
                 cantidad.add(1);
+                productoU.add(p);
             }else{
                 int index = prod.indexOf(p);
                 cantidad.set(index, cantidad.get(index) + 1);
@@ -112,7 +113,7 @@ public class Producto {
         if(prod.isEmpty()){return null;}
         ArrayList<Producto> productoUnico = new ArrayList<>();
         for(Producto p : prod){
-            if(!prod.contains(p)){
+            if(!productoUnico.contains(p)){
                 productoUnico.add(p);
             }
         }
@@ -133,7 +134,7 @@ public class Producto {
     public static Producto getProducto(ArrayList<Producto> prod, String codigo){
         if(prod == null){return null;}
         if(prod.isEmpty()){return null;}
-        if(codigo.isBlank() || codigo.equals("")){return null;}
+        if(codigo.equals("")){return null;}
         ArrayList<Producto> productoU = Producto.getProductosUnicos(prod);
         for(Producto p : productoU){
             if(p.getCodigo().equals(codigo)){
@@ -152,6 +153,15 @@ public class Producto {
             total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
         }
         return total;
+    }
+    public static int getCantidadProductoUnico(ArrayList<Producto> prod, String cod){
+        if(prod == null){return 0;}
+        if(prod.isEmpty()){return 0;}
+        if(Producto.getProducto(prod, cod)==null){return 0;}
+        ArrayList<Integer> cantidadU = Producto.getCantidadProducto(prod);
+        ArrayList<Producto> productosU = Producto.getProductosUnicos(prod);
+        int index = cantidadU.get(productosU.indexOf(Producto.getProducto(prod, cod)));
+        return cantidadU.get(index);
     }
     
 }
