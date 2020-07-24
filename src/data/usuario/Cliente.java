@@ -257,12 +257,13 @@ public class Cliente extends Usuario {
             }
         }
         if(listaProdXVendedor.isEmpty()){return null;}
-        int i=1;
+        int i=Sistema.cantidadPedidos() + 1;
         for(ArrayList<Producto> listaProd : listaProdXVendedor){
             String cod = Integer.toString(i);
             Pedido p = new Pedido(cod, listaProd, this, pago, Producto.getTotalAPagar(listaProd));
             pedidosRealizados.add(p);
             this.pedidos.add(p);
+            i++;
         }
         return pedidosRealizados;
     }

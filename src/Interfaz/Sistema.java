@@ -30,13 +30,36 @@ public class Sistema {
         pedidos = new ArrayList<>();
         codigo = "BUYMEPLS";
     }
+    //Producto p = Producto(String codigoProducto p = Producto(String codigo, Proveedor vendedor, String nombre, String descripcion, ArrayList<CATEGORIA> categoria, double costo), Proveedor vendedor, String nombre, String descripcion, ArrayList<CATEGORIA> categoria, double costo)
     public void inicializarDatos(){
-        Cliente c = new Cliente("andrest","030245","Andres","1","Samanes",new Coordenada(16,20), "andrestoala2013@gmail.com",
+    Cliente c = new Cliente("andrest","030245","Andres","1","Samanes",new Coordenada(16,20), "andrestoala2013@gmail.com",
                                 new PagoTarjeta("Visa", "0123456789123456", "Andres Toala"));
-        Proveedor p = new Proveedor("finca_guayas","030245","Gabriela","2","Samanes",new Coordenada(16,20), "andrestoala2013@gmail.com",
+    Proveedor pv1 = new Proveedor("finca_guayas","030245","Gabriela","2","Samanes",new Coordenada(16,20), "andrestoala2013@gmail.com",
                                     "0123456789");
-        usuarios.add(p);
-        usuarios.add(c);
+    Proveedor pv2 = new Proveedor("almacenes_aki","040568","Jerry","3","Alborada",new Coordenada(20,13), "jlandiva@espol.edu.ec", "0967600799");
+    Proveedor pv3 = new Proveedor("","093456","Joel","4","Sur",new Coordenada(100,20),"joelalvarado2000g@gmail.com","0968154486");
+    Producto p0  = new Producto("100", pv1, "Zanahoria", "Vegetal para ceguera", new ArrayList<CATEGORIA>(), 0.50);
+    p0.setCategoria(CATEGORIA.VEGETAL);
+    Producto p1  = new Producto("200", pv1, "Papa", "Vegetal para comer", new ArrayList<CATEGORIA>(), 1);
+    p1.setCategoria(CATEGORIA.VEGETAL);
+    Producto p2  = new Producto("300", pv1, "Piña", "Para mayor placer", new ArrayList<CATEGORIA>(), 2);
+    p2.setCategoria(CATEGORIA.FRUTA);
+    Producto p3  = new Producto("400", pv2, "Manzana", "Para desayuno", new ArrayList<CATEGORIA>(), 10);
+    p3.setCategoria(CATEGORIA.FRUTA);
+    Producto p4  = new Producto("500", pv2, "Queso", "Para andar queso", new ArrayList<CATEGORIA>(), 0.75);
+    p4.setCategoria(CATEGORIA.LACTEO);
+    Producto p5  = new Producto("600", pv2, "Carne", "Proteína", new ArrayList<CATEGORIA>(), 5);
+    p5.setCategoria(CATEGORIA.CARNICO);
+    Producto p6  = new Producto("700", pv3, "Zanahoria", "Vegetal para ceguera", new ArrayList<CATEGORIA>(), 1);
+    p6.setCategoria(CATEGORIA.VEGETAL);
+    Producto p7  = new Producto("800", pv3, "Durazno en lata", "Pa la pandemia", new ArrayList<CATEGORIA>(), 15);
+    p7.setCategoria(CATEGORIA.CONSERVA);
+    Producto p8  = new Producto("900", pv3, "Leche de burra", "Huesos sanos y fuertes :v", new ArrayList<CATEGORIA>(), 20);
+    p8.setCategoria(CATEGORIA.LACTEO);
+    usuarios.add(pv1);
+    usuarios.add(pv2);
+    usuarios.add(pv3);
+    usuarios.add(c);
     }
     //menu Principal
     public void menu(){
@@ -714,7 +737,22 @@ public class Sistema {
             pedidosFormat.add(pedidoAct);
         }
         return pedidosFormat;
-    }       
+    }    
+    public static int cantidadPedidos(){
+        if(pedidos==null){return 0;}
+        if(pedidos.isEmpty()){return 0;}
+        int acum = 0;
+        for(Pedido p: pedidos){
+            acum++;
+        }
+        return acum;
+    }
+    
+        
+        
+        
+        
+           
     public static void main(String[] args) {
         Sistema ui = new Sistema();
         ui.inicializarDatos();
