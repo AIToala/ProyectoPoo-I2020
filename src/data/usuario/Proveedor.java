@@ -61,7 +61,15 @@ public class Proveedor extends Usuario{
     public void addProducto(Producto p){
         this.oferta.add(p);
     }
-
+    public void addProductos(ArrayList<Producto> p){
+        if(p!=null){
+            if(!p.isEmpty()){
+                for(Producto pr : p){
+                    addProducto(pr);
+                }
+            }
+        }
+    }
         
     @Override
     public boolean consultarProducto(ArrayList<Producto> productos){

@@ -385,6 +385,7 @@ public class Sistema {
         Cliente currCl = (Cliente) u;
         String op = "";
         while(!op.equals("5")){
+            Sistema.actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar productos disponibles 50km a la redonda");
             System.out.println("2. Agregar producto al carrito de compras.");
@@ -412,8 +413,9 @@ public class Sistema {
                     }
                     System.out.println("Desea filtrar los productos por categoria, nombre(Completo o Parcial) y rango del precio del producto.");
                     System.out.println("Si/No:");
+                    ArrayList<Producto> filtrado = new ArrayList<>();
                     if(sc.nextLine().toLowerCase().equals("si")){
-                        System.out.println("Ingrese categoria deseada: "
+                        System.out.println("Ingrese categoria deseada: \n"
                                 + "1. CARNICO\n"
                                 + "2. VEGETAL\n"
                                 + "3. FRUTA\n" 
@@ -423,14 +425,19 @@ public class Sistema {
                         switch (sel){
                                 case "1":
                                     sel = CATEGORIA.CARNICO.name();
+                                    break;
                                 case "2":
                                     sel = CATEGORIA.VEGETAL.name();
+                                    break;
                                 case "3":
                                     sel = CATEGORIA.FRUTA.name();
+                                    break;
                                 case "4":
                                     sel = CATEGORIA.LACTEO.name();
+                                    break;
                                 case "5":
                                     sel = CATEGORIA.CONSERVA.name();
+                                    break;
                                 default:    
                                     sel = "";
                         }
@@ -442,20 +449,23 @@ public class Sistema {
                         String rangoFinal = sc.nextLine();
                         ArrayList<String> dataFiltro = new ArrayList<>();
                         dataFiltro.add(sel);dataFiltro.add(name);dataFiltro.add(rangoI);dataFiltro.add(rangoFinal);
-                        ArrayList<Producto> filtrado = currCl.filtrarProducto(dataFiltro);
+                        filtrado = currCl.filtrarProducto(dataFiltro);
                         // aqui se hara clear
                         if(!currCl.consultarProducto(filtrado)){
                             System.out.println("NO PRODUCTOS CON LOS FILTROS MOSTRADOS");
                             continue;
-                        }else{
-                            System.out.println("Ingrese codigo del producto a agregar:");
-                            String cod = sc.nextLine();
-                            System.out.println("Ingrese cantidad de productos a agregar:");
-                            String cant = sc.nextLine();
-                            if(!currCl.agregarAlCarrito(cod, cant)){
-                                System.out.println("No se agrego el producto.");
-                            }
                         }
+                    }
+                    if(filtrado.isEmpty()){
+                        filtrado = getProductosCercanos(currCl);
+                        currCl.consultarProducto(filtrado);
+                    }
+                    System.out.println("Ingrese codigo del producto a agregar:");
+                    String cod = sc.nextLine();
+                    System.out.println("Ingrese cantidad de productos a agregar:");
+                    String cant = sc.nextLine();
+                    if(!currCl.agregarAlCarrito(cod, cant)){
+                        System.out.println("No se agrego el producto.");
                     }
                     System.out.println("Retornando al menu Cliente");
                     continue;
@@ -479,6 +489,7 @@ public class Sistema {
        System.out.println("Menu Carrito de compras");
         String op = "";
         while(!op.equals("4")){
+            Sistema.actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar carrito de compras");
             System.out.println("2. Eliminar producto de carrito de compras");
@@ -511,9 +522,6 @@ public class Sistema {
                     System.out.println("Retornando al menú...");
                     continue;
                 case "3":
-                    //se pregunta si se desea comprar, luego se debe ingresar el metodo de pago del cliente, se genera pedido, se confirma la compra, 
-                    // pedido unico por cada proveedor usado, cambio de estado de pedido, envio de mail, si es tarjeta confirmar codigo, si es paypal depende de fondos
-                    // finalizar compra...
                     if(!currCl.consultarProducto(currCl.getCarrito().getProductos())){
                         System.out.println("No hay productos");
                     }else{
@@ -530,9 +538,8 @@ public class Sistema {
                                 }
                             }else if(opcion.equals("2")){
                                 System.out.println("Digite metodo de pago que desee (1. Tarjeta, 2.PayPal, Otro numero para cancelar compra.)\n");
-                                opcion = "";
-                                opcion = sc.nextLine();
-                                if(opcion.equals("1")){
+                                String opcion2 = sc.nextLine();
+                                if(opcion2.equals("1")){
                                     System.out.println("METODO PAGO TARJETA.");
                                     System.out.println("Ingrese tipo de tarjeta: ");
                                     String tipo = sc.nextLine();
@@ -541,7 +548,7 @@ public class Sistema {
                                     System.out.println("Ingrese nombre del titular: ");
                                     String nombreTitular = sc.nextLine();
                                     pago = new PagoTarjeta(tipo, numT, nombreTitular);
-                                }else if(opcion.equals(2)){
+                                }else if(opcion2.equals("2")){
                                     System.out.println("METODO PAGO PAYPAL");
                                     System.out.println("Ingrese usuario: ");
                                     String user = sc.nextLine();
@@ -554,7 +561,7 @@ public class Sistema {
                             }else{
                                 continue;
                             }
-                            ArrayList<Pedido> pedidos = currCl.generarPedidos(currCl.getCarrito(), pago);
+                            ArrayList<Pedido> pedidos = currCl.generarPedidos(pago);
                             if(pedidos==null){
                                 System.out.println("No se pudo crear los pedidos.");
                             }else{
@@ -679,7 +686,7 @@ public class Sistema {
                 valida = true;
             } catch (NumberFormatException err){
                 valida = false;
-                System.out.println("Las corrdenadas no son válidas");
+                System.out.println("Las coordenadas no son válidas");
                 System.out.println("----------------------------");
                 continue;
             }
@@ -744,7 +751,17 @@ public class Sistema {
         }
         return busc;
     }
-    
+    public static void recuperaProdProv(Usuario u, ArrayList<Producto> prod){
+        if(usuarios != null){
+            for(Usuario us : usuarios){
+                if(us instanceof Proveedor){
+                    if(u.getUser().equals(u.getUser())){
+                        ((Proveedor) us).addProductos(prod);
+                    }
+                }
+            }
+        }
+    }
     public static void actualizarData(){
         productos.clear();
         pedidos.clear();

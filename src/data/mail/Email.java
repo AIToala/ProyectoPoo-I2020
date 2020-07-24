@@ -117,6 +117,7 @@ public class Email{
             System.out.println("Email enviado exitosamente");
             return true;
         } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
             System.out.println("ERROR AL ENVIAR EMAIL. PRUEBE NUEVAMENTE, SU COMPRA HA SIDO CANCELADA.");
             return false;
         }

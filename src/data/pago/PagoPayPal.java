@@ -28,8 +28,12 @@ public class PagoPayPal extends Pago {
         double totalAPagar = 0;
         for(String texto:pedidos){
             String[] data = texto.split("-");
-            String totalPago = data[5];
-            totalAPagar += Double.parseDouble(totalPago);
+            String totalPago = data[4];
+            try{
+                totalAPagar += Double.parseDouble(totalPago);
+            }catch(NumberFormatException e){
+                return false;
+            }
         }
         int numero = (int) ((Math.random() * 1000 ) + 100);
         if(numero>=totalAPagar){

@@ -22,13 +22,9 @@ public class Cliente extends Usuario {
         super(user, password, nombre, id, direccion, ubicacion, correo);
         this.formaPago = formaPago;
         this.carrito = new CarritoCompra();
+        this.pedidos = new ArrayList<>();
     }
-    //Usado unicamente para propositos de inicializacion de sistema.
-    public Cliente(String user, String password, String nombre, String id, String direccion, Coordenada ubicacion, String correo, Pago formaPago, CarritoCompra carrito) {
-        super(user, password, nombre, id, direccion, ubicacion, correo);
-        this.formaPago = formaPago;
-        this.carrito = carrito;
-    }
+    
 
     public Pago getFormaPago() {
         return formaPago;
@@ -55,7 +51,7 @@ public class Cliente extends Usuario {
             System.out.println("CODIGO     : " + prod.getCodigo());
             System.out.println("NOMBRE     : " + prod.getNombre());
             System.out.println("CATEGORIA  : " + prod.getCategoria());
-            System.out.println("PRECIO     : " + prod.getCategoria());
+            System.out.println("PRECIO     : " + prod.getCostoUnitario());
             System.out.println("---------------------------------");
         }
         return true;
@@ -67,46 +63,41 @@ public class Cliente extends Usuario {
             System.out.println("NO FILTROS PASADOS.");
             return null;
         }
-        if(dataFiltro.size()>3){
+        if(dataFiltro.size()>4){
             System.out.println("FILTROS NO VALIDOS");
             return null;
         }
         String categoria = dataFiltro.get(0).toUpperCase();
         String nombre = dataFiltro.get(1).toLowerCase();
-        String rangoPrecio = dataFiltro.get(2);
-        
-        double rangoInicial = 0;
-        double rangoFinal = 0;
-        String[] rangos = null;
-        if(rangoPrecio.contains("-")){
-           rangos = rangoPrecio.split("-");
-        }
+        String rangoInicial = dataFiltro.get(2);
+        String rangoFinal = dataFiltro.get(3);
+        double rangoI = 0;
+        double rangoF = 0;
         try{
-            rangoInicial = Double.parseDouble(rangos[0]);
-            rangoFinal = Double.parseDouble(rangos[1]);
-        } catch (NumberFormatException | NullPointerException err){
-            rangoFinal = Double.MAX_VALUE;
+            rangoI = Double.parseDouble(rangoInicial);
+            rangoF = Double.parseDouble(rangoFinal);
+        } catch (NumberFormatException err){
+            rangoF = Double.MAX_VALUE;
         }
-        if(Sistema.getProductosCercanos(this) == null){ return null;}
         if(Sistema.getProductosCercanos(this) == null){ return null;}
         if(Sistema.getProductosCercanos(this).isEmpty()){ return null;}
         ArrayList<Producto> filtrado = new ArrayList<>();
-        for(Producto p : carrito.getProductos()){
-            if(p.getCategoria().contains(categoria) && p.getNombre().contains(nombre) &&
-               p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
+        for(Producto p : Sistema.getProductosCercanos(this)){
+            if(p.getCategoria().contains(categoria) && p.getNombre().toLowerCase().contains(nombre) && !nombre.equals("") &&
+               p.getCostoUnitario()>= rangoI && p.getCostoUnitario()<= rangoF){
                 filtrado.add(p);
             }else if(p.getCategoria().contains(categoria) && nombre.equals("") &&
-               p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
+               p.getCostoUnitario()>= rangoI && p.getCostoUnitario()<= rangoF){
                 filtrado.add(p);
-            }else if(categoria.equals("") && p.getNombre().contains(nombre) &&
-               p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
+            }else if(categoria.equals("") && p.getNombre().toLowerCase().contains(nombre) &&
+               p.getCostoUnitario()>= rangoI && p.getCostoUnitario()<= rangoF){
                 filtrado.add(p);
-            }else if(nombre.equals("") && categoria.equals("") && p.getCostoUnitario()>= rangoInicial && p.getCostoUnitario()<= rangoFinal){
+            }else if(nombre.equals("") && categoria.equals("") && p.getCostoUnitario()>= rangoI && p.getCostoUnitario()<= rangoF){
                 filtrado.add(p);
             }
         }
         if(filtrado.isEmpty()){
-            return null;
+            return Sistema.getProductosCercanos(this);
         }
         return filtrado;
     
@@ -154,14 +145,22 @@ public class Cliente extends Usuario {
         if(pedidos == null){return false;}
         if(pedidos.isEmpty()){return false;}
         boolean bandera = false;
-        for(Pedido p: this.pedidos){ //Podría ser redundante. Revisar luego. 
+        ArrayList<Pedido> borrar = new ArrayList<>();
+        for(Pedido p: this.pedidos){ 
             for(Pedido p2: pedidos){
                 if(p.equals(p2)){
                     Proveedor prov = p2.getProductosPedidos().get(0).getVendedor();
                     bandera = true;
-                    this.pedidos.remove(p2);
+                    borrar.add(p2);
                     prov.getPedidos().remove(p2);
+                    Usuario u = prov;
+                    Sistema.recuperaProdProv(u, p.getProductosPedidos());
                 }
+            }
+        }
+        for(Pedido b: borrar){
+            if(this.pedidos.contains(b)){
+                this.pedidos.remove(b);
             }
         }
         return false;
@@ -173,6 +172,7 @@ public class Cliente extends Usuario {
         if(Sistema.getProductosCercanos(this).isEmpty()){return false;}
         if(cod.isEmpty()){return false;}
         if(cantidad.isEmpty()){return false;}
+        if(Producto.getProducto(Sistema.getProductosCercanos(this), cod)==null){return false;}
         ArrayList<Integer> cantidadDisponible = Producto.getCantidadProducto(Sistema.getProductosCercanos(this));
         ArrayList<Producto> productosU = Producto.getProductosUnicos(Sistema.getProductosCercanos(this));
         int banderaCant = 0;
@@ -199,6 +199,7 @@ public class Cliente extends Usuario {
                 bandera = true;
                 for(int i=0; i<agregados; i++){
                     carrito.setProductos(p);
+                    Sistema.productos.remove(p);
                 }
                 
             }else if(p.getNombre().equals(deseado.getNombre()) && suficiente == false){
@@ -212,6 +213,7 @@ public class Cliente extends Usuario {
                 bandera = true;
                 for(int i=0;i<cantOtro;i++){
                     carrito.setProductos(p);
+                    Sistema.productos.remove(p);
                 }
                 agregados += cantOtro;
             }
@@ -237,7 +239,7 @@ public class Cliente extends Usuario {
         }
        
     }
-    public ArrayList<Pedido> generarPedidos(CarritoCompra carrito, Pago pago){
+    public ArrayList<Pedido> generarPedidos(Pago pago){
         if(carrito==null){return null;}
         if(carrito.getProductos().isEmpty()){return null;}
         ArrayList<Pedido> pedidosRealizados = new ArrayList<>();
@@ -248,6 +250,7 @@ public class Cliente extends Usuario {
             String user = pv.getUser();
             if(!proveedores.contains(user)){
                 proveedores.add(user);
+                listaProdXVendedor.add(new ArrayList<>());
             }
         }
         for(Producto prod:carrito.getProductos()){
@@ -265,10 +268,8 @@ public class Cliente extends Usuario {
             String cod = Integer.toString(i);
             Pedido p = new Pedido(cod, listaProd, this, pago, Producto.getTotalAPagar(listaProd));
             pedidosRealizados.add(p);
-            
             this.pedidos.add(p);
             prov.addPedido(p);
-            
             i++;
         }
         return pedidosRealizados;
