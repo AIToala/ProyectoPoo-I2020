@@ -679,6 +679,7 @@ public class Sistema {
                 valida = true;
             } catch (NumberFormatException err){
                 valida = false;
+                System.out.println("Las corrdenadas no son válidas");
                 System.out.println("----------------------------");
                 continue;
             }
