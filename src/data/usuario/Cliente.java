@@ -122,7 +122,7 @@ public class Cliente extends Usuario {
                 pago = "Tarjeta "+numTarjeta;
             }
             System.out.println("FORMA DE PAGO  : " + pago);
-            System.out.println("PRODUCTOS:" + pedido.getProductosPedidos() + "|");
+            System.out.println("PRODUCTOS: ");
             if(pedido.getProductosPedidos() != null || !pedido.getProductosPedidos().isEmpty()){
                 ArrayList<Producto> productosU = Producto.getProductosUnicos(pedido.getProductosPedidos());
                 ArrayList<Integer> cantidad = Producto.getCantidadProducto(pedido.getProductosPedidos());

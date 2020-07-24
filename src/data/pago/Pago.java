@@ -5,6 +5,7 @@
  */
 package data.pago;
 
+import data.pedido.Pedido;
 import java.util.ArrayList;
 
 /**
@@ -12,5 +13,5 @@ import java.util.ArrayList;
  * @author Usuario
  */
 public abstract class Pago {
-    public abstract boolean procesarPago(String s, ArrayList<String> d);
+    public abstract boolean procesarPago(String s, ArrayList<Pedido> d);
 }

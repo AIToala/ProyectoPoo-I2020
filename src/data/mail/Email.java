@@ -4,23 +4,23 @@
  * and open the template in the editor.
  */
 package data.mail;
-
+import data.pedido.Pedido;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import java.util.Properties; 
+import javax.mail.*; 
+import javax.mail.internet.*; 
+import javax.activation.*; 
+import javax.mail.Session; 
+import javax.mail.Transport; 
 
 /**
  *
  * @author Usuario
  */
 public class Email{
-    private final static String emisor = "no_reply@agrostorenu.com";
+    private final static String gmailAcc = "agrostoreNU@gmail.com";
     private String receptor;
     private String mensaje;
     
@@ -29,7 +29,123 @@ public class Email{
         this.receptor = receptor;
         this.mensaje = mensaje;
     }
-    
+    public boolean enviarEmail(){
+        Properties props = new Properties();
+        
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        String password = "030245AT";
+        
+        Session session = Session.getInstance(props, new Authenticator(){
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication(){
+                return new PasswordAuthentication(gmailAcc, password);
+            }
+        });
+        
+        String subject = "Factura generada por compras de productos en app AGROSTORENU";
+        try{ 
+           // MimeMessage object. 
+           Message message = new MimeMessage(session); 
+
+           // Set From Field: adding senders email to from field. 
+           message.setFrom(new InternetAddress(gmailAcc)); 
+
+           // Set To Field: adding recipient's email to from field. 
+           message.setRecipient(Message.RecipientType.TO, new InternetAddress(receptor)); 
+           // Set Subject: subject of the email 
+           message.setSubject(subject); 
+
+           // set body of the email. 
+           message.setText(mensaje); 
+
+           // Send email. 
+           Transport.send(message); 
+           System.out.println("Email enviado exitosamente a " + receptor); 
+        } 
+        catch (MessagingException mex){
+            mex.printStackTrace(); 
+            System.out.println("ERROR AL ENVIAR EMAIL. PRUEBE NUEVAMENTE, SU COMPRA HA SIDO CANCELADA.");
+            return false;
+        }
+        return true;
+        
+    }
+    public static boolean enviarEmailConfirmacion(String correo, ArrayList<Pedido> pedido){
+        if(correo.isEmpty()){return false;}
+        if(pedido == null) {return false;}
+        if(pedido.isEmpty()){return false;}
+        String enviar = "";
+        int i = 1;
+        for(Pedido texto:pedido){
+            String cod = texto.getCodigo();
+            String fecha = texto.getFechas().get(0).toString();
+            String productosPedidos = texto.getProductos();
+            String cliente = texto.getCliente().getUser();
+            String totalPago = Double.toString(texto.getTotalPagar());
+            String estado = texto.getEstado().name();
+            enviar += "("+ i +") Codigo: "+ cod +"- Pedido" + " - Fecha: " + LocalDateTime.now() + " - PAGO POR TARJETA" +
+                      "- Lista de productos solicitados: " + productosPedidos + " - Total a Pagar: " + totalPago;
+            i+=1;
+        }
+        String recipient = correo;
+        String codigo = "BUYMEPLS";
+        String subject = "Factura generada por compras de productos en app AGROSTORENU";
+        
+        Properties props = new Properties();
+        
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        String password = "030245AT";
+        
+        Session session = Session.getInstance(props, new Authenticator(){
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication(){
+                return new PasswordAuthentication(gmailAcc, password);
+            }
+        });
+        
+        try{ 
+           // MimeMessage object. 
+           Message message = new MimeMessage(session); 
+
+           // Set From Field: adding senders email to from field. 
+           message.setFrom(new InternetAddress(gmailAcc)); 
+
+           // Set To Field: adding recipient's email to from field. 
+           message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient)); 
+           // Set Subject: subject of the email 
+           message.setSubject(subject); 
+           String htmlCode = "<div style=\"background: antiquewhite;\">"
+                           + "<h1 style=\"text-align:center;color:#FF0000;\">Hola, has comprado en AgroStoreNU?</h1>"
+                           + "<p>Verifica si has realizado las siguientes compras:</p></br>"
+                           + "<p>" + enviar + "</p>"
+                           + "<p> Si has realizado estas compras, ingrese el codigo generado en AgroStoreNU y prontos tus productos estaran al pie de su hogar. </p>"
+                           + "<p><center><b>" + "Codigo:" + codigo + "</b></center></p>"
+                           + "</div>";
+           message.setContent(htmlCode, "text/html");
+           /*
+           message.setText("Hola "+ "\n" +
+                        "¿Has comprado en AgroStoreNU?\n" +
+                        "Verifica si has realizado las siguientes compras:\n" + enviar +
+                        "\n\nSi has realizado estas compras, ingrese el codigo generado en AgroStoreNU y pronto tus productos estaran al pie de su hogar."+
+                        "\t\t" + codigo + "\nGracias por confiar en nosotros, AgroStoreNU. "); 
+           */
+           Transport.send(message); 
+           System.out.println("Email enviado exitosamente a " + recipient); 
+        } 
+        catch (Exception mex){
+            mex.printStackTrace(); 
+            System.out.println("ERROR AL ENVIAR EMAIL. PRUEBE NUEVAMENTE, SU COMPRA HA SIDO CANCELADA.");
+            return false;
+        }
+        return true;
+    }
+    /*
     public static boolean enviarEmailConfirmacion(String correo, ArrayList<String> pedido){
         if(correo.isEmpty()){return false;}
         if(pedido == null) {return false;}
@@ -59,6 +175,7 @@ public class Email{
         String codigo = "BUYMEPLS";
         String subject = "Factura generada por compras de productos en app AGROSTORENU";
         Message msg = new MimeMessage(session);
+        
         try {
             //set message headers
             msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
@@ -85,8 +202,9 @@ public class Email{
             return false;
         }
     }
+    /*
     
-    
+    /*
     public boolean enviarEmail(){
         if(mensaje.isEmpty()){return false;}
         // Set up the SMTP server.
@@ -122,4 +240,5 @@ public class Email{
             return false;
         }
     }
+    */
 }

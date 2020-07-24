@@ -26,9 +26,8 @@ public class Pedido {
 
     public Pedido(String codigo, ArrayList<Producto> productosPedidos, Cliente cliente, Pago metodoPago, double totalPagar) {
         this.codigo = codigo;
-        LocalDateTime date = LocalDateTime.now();
-        fechas = new ArrayList<>();
-        fechas.add(date);
+        this.fechas = new ArrayList<>();
+        fechas.add(LocalDateTime.now());
         this.productosPedidos = productosPedidos;
         this.cliente = cliente;
         this.metodoPago = metodoPago;
@@ -54,6 +53,13 @@ public class Pedido {
 
     public ArrayList<Producto> getProductosPedidos() {
         return productosPedidos;
+    }
+    public String getProductos(){
+        String s = "";
+        for(Producto p : this.productosPedidos){
+            s+= p.getNombre()+",";
+        }
+        return s.substring(0, s.lastIndexOf(","));
     }
 
     public void setProductosPedidos(ArrayList<Producto> productosPedidos) {

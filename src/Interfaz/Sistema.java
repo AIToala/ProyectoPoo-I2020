@@ -72,10 +72,10 @@ public class Sistema {
     }
     //menu Principal
     public void menu(){
-        actualizarData();
         System.out.println("Bienvenido a AgroStoreNU");
         String op="";
         while(!op.equals("3")){
+            actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Iniciar Sesion");
             System.out.println("2. Registrar Usuario");
@@ -207,7 +207,7 @@ public class Sistema {
         System.out.println("Menu Proveedor");
         String op1="";
         while(!op1.equals("7")){
-            Sistema.actualizarData();
+            actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar Información de los pedidos.");
             System.out.println("2. Gestionar estado de los pedidos.");
@@ -385,7 +385,7 @@ public class Sistema {
         Cliente currCl = (Cliente) u;
         String op = "";
         while(!op.equals("5")){
-            Sistema.actualizarData();
+            actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar productos disponibles 50km a la redonda");
             System.out.println("2. Agregar producto al carrito de compras.");
@@ -489,7 +489,7 @@ public class Sistema {
        System.out.println("Menu Carrito de compras");
         String op = "";
         while(!op.equals("4")){
-            Sistema.actualizarData();
+            actualizarData();
             System.out.println("------------------------------------------");
             System.out.println("1. Consultar carrito de compras");
             System.out.println("2. Eliminar producto de carrito de compras");
@@ -569,7 +569,7 @@ public class Sistema {
                                 System.out.println("Se procedera a enviar un correo electronico...");
                                 if(pago instanceof PagoTarjeta){
                                     PagoTarjeta pagoT = (PagoTarjeta) pago;
-                                    if(!Email.enviarEmailConfirmacion(currCl.getCorreo(), Sistema.PedidoEmail(pedidos))){
+                                    if(!Email.enviarEmailConfirmacion(currCl.getCorreo(), pedidos)){
                                         System.out.println("CORREO DE CONFIRMACION NO ENVIADO...");
                                         currCl.removerPedidosGenerados(pedidos);
                                        
@@ -579,7 +579,7 @@ public class Sistema {
                                             if(sc.nextLine().equals(Sistema.codigo)){
                                                 System.out.println("COMPRA HA SIDO FINALIZADA.");
                                                 currCl.getCarrito().getProductos().clear();
-                                                if(!pagoT.procesarPago(currCl.getCorreo(), Sistema.PedidoEmail(pedidos))){
+                                                if(!pagoT.procesarPago(currCl.getCorreo(), pedidos)){
                                                     System.out.println("No se envio el email de agradecimiento... ");
                                                 }
                                                 break;
@@ -595,7 +595,7 @@ public class Sistema {
                                     }
                                 }else if(pago instanceof PagoPayPal){
                                     PagoPayPal pagoP = (PagoPayPal) pago;
-                                    if(!pagoP.procesarPago(opcion, Sistema.PedidoEmail(pedidos))){
+                                    if(!pagoP.procesarPago(opcion, pedidos)){
                                         System.out.println("No tiene fondos suficientes para pagar.");
                                         currCl.removerPedidosGenerados(pedidos);
                                     }else{

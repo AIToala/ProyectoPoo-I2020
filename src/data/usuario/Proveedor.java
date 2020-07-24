@@ -132,7 +132,7 @@ public class Proveedor extends Usuario{
         for(Pedido pedido : pedidos){
             System.out.println("CODIGO     : " + pedido.getCodigo()+ "|");
             System.out.println("FECHA INICIO   : " + pedido.getFechas().get(0));
-            System.out.println("PRODUCTOS:" + pedido.getProductosPedidos() + "|");
+            System.out.println("PRODUCTOS:");
             if(pedido.getProductosPedidos() != null || !pedido.getProductosPedidos().isEmpty()){
                 ArrayList<Producto> productosU = Producto.getProductosUnicos(pedido.getProductosPedidos());
                 ArrayList<Integer> cantidad = Producto.getCantidadProducto(pedido.getProductosPedidos());
@@ -144,7 +144,7 @@ public class Proveedor extends Usuario{
             }else{
                 System.out.println("No hay productos...");
             }
-            System.out.println("\nDATOS DEL CLIENTE  : " + 
+            System.out.println("\nDATOS DEL CLIENTE  /n" + 
                              "Nombre: " + pedido.getCliente().getNombre() + "\n" + 
                              "Direccion: " + pedido.getCliente().getDireccion() + "\n" +
                              "Numero Telefonico: " + pedido.getCliente().correo);

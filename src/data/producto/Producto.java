@@ -147,10 +147,8 @@ public class Producto {
         if(prod == null){return 0;}
         if(prod.isEmpty()){return 0;}
         double total = 0;
-        ArrayList<Producto> productosU = Producto.getProductosUnicos(prod);
-        ArrayList<Integer> cantidad = Producto.getCantidadProducto(prod);
-        for(Producto p : productosU){
-            total += p.getCostoUnitario() * cantidad.get(productosU.indexOf(p));
+        for(Producto p : prod){
+            total += p.getCostoUnitario();
         }
         return total;
     }
