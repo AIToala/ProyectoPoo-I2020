@@ -9,6 +9,7 @@ import data.usuario.*;
 import data.producto.*;
 import data.pago.*;
 import data.pedido.*;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
 /**
@@ -79,7 +80,7 @@ public class Sistema {
     /**
      * Metodo void menu nos muestra el menu principal del programa AgroStoreNU.
      */
-    public void menu(){
+    public void menu() throws IOException{
         System.out.println("Bienvenido a AgroStoreNU");
         String op="";
         while(!op.equals("3")){
@@ -646,7 +647,7 @@ public class Sistema {
      * Metodo que me valida el ingreso de datos de un usuario que desea registrarse
      * dentro del programa AgrostoreNU.  
      */
-    public ArrayList<String> validaIngresoDatosUsuario(){
+    public ArrayList<String> validaIngresoDatosUsuario() throws IOException{
         boolean valida = false;
         ArrayList<String> data = new ArrayList<>();
         do{
@@ -701,19 +702,29 @@ public class Sistema {
             }
             System.out.println("Ingrese direccion de usuario: ");
             String direccion = sc.nextLine();
-            System.out.println("Ingrese coordenadas de usuario\nLatitud: ");
-            String lat = sc.nextLine();
-            System.out.println("Ingrese coordenadas de usuario\nLatitud: ");
-            String longitud = sc.nextLine();
-            try{
-                Double.parseDouble(lat);
-                Double.parseDouble(longitud);
-                valida = true;
-            } catch (NumberFormatException err){
-                valida = false;
-                System.out.println("Las coordenadas no son válidas");
-                System.out.println("----------------------------");
-                continue;
+            String[] coordinates = GeoCoding.getGeocode(direccion);
+            String lat;
+            String longitud;
+            if (coordinates == null){
+                System.out.println("No se encontraron coordenadas para la dirección dada. Ingréselas manualmente...");
+                System.out.println("Ingrese coordenadas de usuario\nLatitud: ");
+                lat = sc.nextLine();
+                System.out.println("Ingrese coordenadas de usuario\nLongitud: ");
+                longitud = sc.nextLine();
+                try{
+                    Double.parseDouble(lat);
+                    Double.parseDouble(longitud);
+                    valida = true;
+                } catch (NumberFormatException err){
+                    valida = false;
+                    System.out.println("Las coordenadas no son válidas");
+                    System.out.println("----------------------------");
+                    continue;
+                }
+            } else{
+                lat = coordinates[0];
+                longitud = coordinates[1];
+                System.out.println("Sus coordenadas son: (" + lat + "," + longitud + ")");
             }
             System.out.println("Ingrese correo de usuario: ");
             String correo = sc.nextLine();
@@ -930,7 +941,7 @@ public class Sistema {
      * Metodo estatico main que permite la ejecucion del Sistema AgroStoreNU.
      * @param   args    argumentos que requiera el sistema.
      */       
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         Sistema ui = new Sistema();
         ui.inicializarDatos();
         ui.menu();
