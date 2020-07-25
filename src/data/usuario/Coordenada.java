@@ -6,19 +6,34 @@
 package data.usuario;
 
 /**
- *
- * @author Usuario
+ * Clase que permite ubicar geograficamente mediante latitud y longitud a los usuarios
+ * del Sistema AgroStoreNU.
+ * @author Grupo1ProyectoPOO
  */
 public class Coordenada {
+    //Variables de instancia.
     private double latitud;
     private double longitud;
-    private final static double RADIOTIERRA = 6378; 
+    private final static double RADIOTIERRA = 6378;
+    /**
+     * Constructor vacio que instancia una Coordenada.
+     */
     public Coordenada(){}
+    /**
+     * Constructor que instancia una coordenada dado una latitud y una longitud.
+     * @param latitud   latidud en grados.
+     * @param longitud  longitud en grados.
+     */
     public Coordenada(double latitud, double longitud){
         this.latitud = latitud;
         this.longitud = longitud;
     }
-    
+    /**
+     * Metodo que calcula la distancia de una Coordenada a otra Coordenada.
+     * @param c1    Coordenada inicial
+     * @param c2    Coordenada final
+     * @return      Distancia entre estas coordenadas.
+     */
     public static double calcularDistancia(Coordenada c1, Coordenada c2){
         double lat1 = c1.latitud * (Math.PI/180);
         double lat2 = c2.latitud * (Math.PI/180);

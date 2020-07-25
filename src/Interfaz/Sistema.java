@@ -12,7 +12,7 @@ import data.pedido.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 /**
- *
+ * Clase Sistema encargada de correr nuestro programa AgroStore 
  * @author AToala
  */
 public class Sistema {
@@ -23,6 +23,9 @@ public class Sistema {
     public static ArrayList<Pedido> pedidos;
     public static String codigo;
     
+    /**
+     * Constructor Sistema contiene base de datos del programa AgrostoreNU.
+     */
     public Sistema(){
         sc = new Scanner(System.in);
         usuarios = new ArrayList<>();
@@ -30,7 +33,9 @@ public class Sistema {
         pedidos = new ArrayList<>();
         codigo = "BUYMEPLS";
     }
-    //Producto p = Producto(String codigoProducto p = Producto(String codigo, Proveedor vendedor, String nombre, String descripcion, ArrayList<CATEGORIA> categoria, double costo), Proveedor vendedor, String nombre, String descripcion, ArrayList<CATEGORIA> categoria, double costo)
+    /**
+     * Metodo void que inicializa los datos de la base de datos del programa AgroStoreNU.
+     */
     public void inicializarDatos(){
     Cliente c = new Cliente("andrest","030245","Andres","1","Samanes",new Coordenada(16,20), "andrestoala2013@gmail.com",
                                 new PagoTarjeta("Visa", "0123456789123456", "Andres Toala"));
@@ -70,7 +75,10 @@ public class Sistema {
     usuarios.add(pv3);
     usuarios.add(c);
     }
-    //menu Principal
+    
+    /**
+     * Metodo void menu nos muestra el menu principal del programa AgroStoreNU.
+     */
     public void menu(){
         System.out.println("Bienvenido a AgroStoreNU");
         String op="";
@@ -201,7 +209,15 @@ public class Sistema {
             }
         }
     }
-    //menu Proveedor
+    
+    /**
+     * Menu para el tipo de Usuario Proveedor nos muestra las acciones que realiza
+     * dentro del programa AgrostoreNU.
+     * @param   u   Una instancia de Usuario que sera downcasteado a Proveedor.  
+     * @see data.producto
+     * @see data.usuario
+     * @see data.producto
+     */
     public void menuProveedor(Usuario u){
         Proveedor currProv = (Proveedor) u;
         System.out.println("Menu Proveedor");
@@ -379,7 +395,14 @@ public class Sistema {
             }
         }
     }
-    //menu Cliente
+    /**
+     * Menu para el tipo de Usuario Cliente nos muestra las acciones que realiza
+     * dentro del programa AgrostoreNU.
+     * @param   u   Una instancia de Usuario que sera downcasteada a Cliente.  
+     * @see data.usuario
+     * @see data.mail
+     * @see data.pedido
+     */
     public void menuCliente(Usuario u){
         System.out.println("Menu Cliente");
         Cliente currCl = (Cliente) u;
@@ -485,6 +508,13 @@ public class Sistema {
             }
         }
     }
+    /**
+     * Menu Carrito de Compra para una instancia Cliente nos muestra las acciones que realiza el cliente
+     * al carrito de compras dentro del programa AgrostoreNU.
+     * @param   currCl   Una instancia de Cliente.
+     * @see CarritoCompra
+     * @see data.producto
+     */
     public void menuCarritoCompra(Cliente currCl){
        System.out.println("Menu Carrito de compras");
         String op = "";
@@ -619,8 +649,11 @@ public class Sistema {
             }
         } 
     }
-    
     //Metodos del sistema...
+    /**
+     * Metodo que me valida el ingreso de datos de un usuario que desea registrarse
+     * dentro del programa AgrostoreNU.  
+     */
     public ArrayList<String> validaIngresoDatosUsuario(){
         boolean valida = false;
         ArrayList<String> data = new ArrayList<>();
@@ -710,6 +743,12 @@ public class Sistema {
         }while(!valida);
         return null;
     }
+    /**
+     * Metodo que permite al Usuario ya sea Cliente o Proveedor ingresar dentro del programa AgrostoreNU.
+     * @param   user        nombre de usuario del Usuario debe existir dentro de la base de datos.
+     * @param   password    Contrasena del usuario debe coincidir con el atribuido al usuario y la base de datos.  
+     * @return              true si el usuario existe y la contrasena asignada es la atribuida al Usuario permitiendo la entrada al Sistema. false, caso contrario.
+     */
     public boolean iniciarSesion(String user, String password){
         if(usuarios == null){
             return false;
@@ -724,18 +763,38 @@ public class Sistema {
         }
         return false;
     }
+    /**
+     * Metodo que permite el registro de un Cliente dentro del sistema de AgroStoreNU.
+     * El parametro c es ingresado dentro de la base de datos Usuarios si no existe inconvenientes.
+     * @param   c   Una instancia de Cliente.
+     * @return      true si el Cliente fue agregado con exito a la base de datos. false, caso contrario
+     */
     public boolean registrarUsuario(Cliente c){
         if(c == null){return false;}
         if(usuarios == null){return false;}
         usuarios.add(c);
         return true;
     }
+    /**
+     * Metodo que permite el registro de un Proveedor dentro del sistema de AgroStoreNU.
+     * El parametro p es ingresado dentro de la base de datos Usuarios si no existe inconvenientes.
+     * @param   p   Una instancia de Proveedor.
+     * @return      true si el Proveedor fue agregado con exito a la base de datos. false, caso contrario
+     */
     public boolean registrarUsuario(Proveedor p){
         if(p == null){return false;}
         if(usuarios == null){return false;}
         usuarios.add(p);
         return true;
     }
+    /**
+     * Metodo que permite conseguir una instancia de Usuario dentro de la base de datos sistema de AgroStoreNU.
+     * Si el usuario con usuario user y contrasena password existen entonces se devuelve la instancia de Usuario 
+     * con estas instancias de variable que estan dentro de la base de datos del sistema, caso contrario retorna null.
+     * @param   user        nombre de usuario.
+     * @param   password    contrasena del usuario.
+     * @return  una instancia de Usuario.
+     */
     public Usuario conseguirUsuario(String user, String password){
         if(usuarios == null){
             return null;
@@ -751,6 +810,14 @@ public class Sistema {
         }
         return busc;
     }
+    /**
+     * Metodo estatico utilizado para recuperar productos perdidos de un proveedor 
+     * cuando una compra es cancelada dentro del sistema de AgroStoreNU.
+     * Recorre lista de usuarios y usa el metodo addProductos del Proveedor.
+     * @param   u       instancia de Usuario.
+     * @param   prod    arrayList de Producto.
+     * @see Proveedor
+     */
     public static void recuperaProdProv(Usuario u, ArrayList<Producto> prod){
         if(usuarios != null){
             for(Usuario us : usuarios){
@@ -762,6 +829,11 @@ public class Sistema {
             }
         }
     }
+    /**
+     * Metodo estatico que permite actualizar las bases de datos del Sistema de AgroStoreNU.
+     * Realiza una limpieza y recorre la lista de usuarios, si este es un Proveedor saca las listas
+     * anexas al mismo, Pedidos y Productos y las agrega nuevamente a las bases de datos.
+     */
     public static void actualizarData(){
         productos.clear();
         pedidos.clear();
@@ -792,6 +864,12 @@ public class Sistema {
             }
         }
     }
+    /**
+     * Metodo estatico que permite conseguir una instancia de Usuario dentro de la base de datos sistema de AgroStoreNU.
+     * Si el usuario con usuario user existen entonces se devuelve la instancia de Usuario, retorna null caso contrario.
+     * @param   user    nombre de usuario.
+     * @return          una instancia de Proveedor.
+     */
     public static Proveedor getProveedor(String user){
         if(usuarios == null){return null;}
         if(usuarios.isEmpty()){return null;}
@@ -806,7 +884,14 @@ public class Sistema {
         }
         return null;
     }
-    
+    /**
+     * Metodo estatico que recibe como parametro una instancia de Cliente y obtiene una lista de Producto
+     * de los cuales sus proveedores estan a determinada distancia del Cliente. Si no existen productos a la distancia determinada
+     * retorna null.
+     * @param   c   instancia de Cliente.
+     * @return      un arrayList de Producto.
+     * @see     Coordenada
+     */
     public static ArrayList<Producto> getProductosCercanos(Cliente c){
         if(productos == null){return null;}
         if(productos.isEmpty()){return null;}
@@ -822,6 +907,13 @@ public class Sistema {
         }
         return busq;
     }
+    /**
+     * Metodo estatico que recibe una lista de pedidos y retorna una lista de String usado para poder ser
+     * enviados via mail, si la lista de pedidos es null o esta vacia retorna un null. 
+     * @param   pedidos     arrayList de Pedido. 
+     * @return              arrayList de String.
+     * @see Email
+     */
     public static ArrayList<String> PedidoEmail(ArrayList<Pedido> pedidos){
         if(pedidos==null){return null;}
         if(pedidos.isEmpty()){return null;}
@@ -832,6 +924,10 @@ public class Sistema {
         }
         return pedidosFormat;
     }    
+    /**
+     * Metodo estatico que obtiene la cantidad de pedidos realizados y registrados en la base de datos del Sistema AgroStoreNU.
+     * @return  cantidad(int) de pedidos dentro de la base de datos.
+     */
     public static int cantidadPedidos(){
         if(pedidos==null){return 0;}
         if(pedidos.isEmpty()){return 0;}
@@ -841,17 +937,13 @@ public class Sistema {
         }
         return acum;
     }
-    
-        
-        
-        
-        
-           
+    /**
+     * Metodo estatico main que permite la ejecucion del Sistema AgroStoreNU.
+     * @param   args    argumentos que requiera el sistema.
+     */       
     public static void main(String[] args) {
         Sistema ui = new Sistema();
         ui.inicializarDatos();
         ui.menu();
-        
     }
-    
 }

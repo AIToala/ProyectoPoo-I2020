@@ -6,10 +6,11 @@
 package data.producto;
 
 /**
- *
- * @author Usuario
+ * Enum que me permite categorizar los productos dentro del sistema.
+ * @author Grupo1ProyectoPOO
  */
 public enum CATEGORIA {
+    //Categoria de Productos.
     CARNICO,
     VEGETAL,
     FRUTA,

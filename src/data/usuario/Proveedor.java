@@ -14,14 +14,27 @@ import java.util.Scanner;
 import data.mail.Email;
 import java.time.LocalDateTime;
 /**
- *
- * @author Usuario
+ * Clase que representa a uno de los actores del Sistema de AgroStoreNU
+ * Proveedor extiende de Usuario.
+ * Proveedor registra productos nuevos para el sistema y gestiona los pedidos que se realizan.
+ * @author Grupo1ProyectoPOO
  */
 public class Proveedor extends Usuario{
+    //Variables de instancia.
     private String contacto;
     private ArrayList<Producto> oferta;
     private ArrayList<Pedido> pedidos;
-
+    /**
+     * Constructor que instancia a un Proveedor.
+     * @param user      Usuario unico del Cliente. (Heredado del Padre)
+     * @param password  Contrasena del Cliente. (Heredado del Padre)
+     * @param nombre    Nombre del Cliente. (Heredado del Padre)
+     * @param id        ID Unica del Cliente. (Heredado del Padre)
+     * @param direccion Direccion del Cliente. (Heredado del Padre)
+     * @param ubicacion Ubicacion del Cliente. (Heredado del Padre)
+     * @param correo    Correo del Cliente. (Heredado del Padre)
+     * @param contacto  Numero de contacto del Proveedor.
+     */
     public Proveedor(String user, String password, String nombre, String id, String direccion, Coordenada ubicacion, String correo, String contacto) {
         super(user, password, nombre, id, direccion, ubicacion, correo);
         this.contacto = contacto;
@@ -38,29 +51,55 @@ public class Proveedor extends Usuario{
         this.oferta = oferta;
         this.pedidos = pedidos;
     }
-
+    /**
+     * Metodo que retorna la variable de instancia contacto de Proveedor.
+     * @return contacto del proveedor.
+     */
     public String getContacto() {
         return contacto;
     }
-
+    /**
+     * Metodo que modifica la variable de instancia contacto de Proveedor.
+     * @param contacto contacto del proveedor.
+     */
     public void setContacto(String contacto) {
         this.contacto = contacto;
     }
-
+    /**
+     * Metodo que retorna la variable de instancia oferta de Proveedor.
+     * oferta es una lista de Producto.
+     * @return Lista de Producto ofertados.
+     */
     public ArrayList<Producto> getOferta() {
         return oferta;
     }
-
+    /**
+     * Metodo que retorna la variable de instancia pedidos de Proveedor.
+     * pedidos es una lista de Pedidos.
+     * @return Lista de Pedidos que gestiona.
+     */
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
+    /**
+     * Metodo que agrega un pedido a la variable de instancia pedidos de Proveedor.
+     * @param p Pedido que se desea agregar.
+     */
     public void addPedido(Pedido p){
         this.pedidos.add(p);
     }
-    
+    /**
+     * Metodo que agrega un producto a la variable de instancia oferta de Proveedor.
+     * @param p Producto que se desea agregar.
+     */
     public void addProducto(Producto p){
         this.oferta.add(p);
     }
+    /**
+     * Metodo que agrega todos los elementos de la lista de Producto dada a la variable de instancia oferta de Proveedor.
+     * oferta es una Lista de Producto.
+     * @param p Lista de productos que se desean agregar sus elementos.
+     */
     public void addProductos(ArrayList<Producto> p){
         if(p!=null){
             if(!p.isEmpty()){
@@ -70,7 +109,11 @@ public class Proveedor extends Usuario{
             }
         }
     }
-        
+    /**
+     * Metodo que muestra los productos dados en una Lista de Producto.
+     * @param productos lista de Productos
+     * @return          verdadero si la lista no es null ni vacia, falso caso Contrario.
+     */
     @Override
     public boolean consultarProducto(ArrayList<Producto> productos){
         if(productos == null){return false;}
@@ -85,6 +128,12 @@ public class Proveedor extends Usuario{
         }
         return true;
     }
+    /**
+     * Metodo que filtra los productos de la variable de instancia oferta de un Proveedor por la lista de filtros dada.
+     * oferta es una lista de Productos.
+     * @param dataFiltro    Lista de filtros (categoria, nombre, rango Inicial del Precio, rango Final del precio)
+     * @return              Lista de Producto filtrado.
+     */
     @Override
     public ArrayList<Producto> filtrarProducto(ArrayList<String> dataFiltro){
         if(dataFiltro == null){
@@ -122,7 +171,11 @@ public class Proveedor extends Usuario{
         return filtrado;
     
     }
-    
+    /**
+     * Metodo que consulta los pedidos que posee el Proveedor en su variable de instancia pedidos
+     * pedidos es una lista de Pedidos.
+     * @return  verdadero si la lista de Pedido no es nula ni vacia, falso caso contrario.
+     */
     @Override
     public boolean consultarPedidos(){
         if(pedidos == null){return false;}
@@ -155,7 +208,12 @@ public class Proveedor extends Usuario{
         }
         return true;
     }
-    
+    /**
+     * Metodo que registra nuevos productos dentro de la variable de instancia oferta de un Proveedor.
+     * Al registrar el producto valida que sus datos sean correctos y si no lo son los retorna al menu anterior.
+     * Registra tambien una cantidad dada de elementos.
+     * @return  Verdadero si se agrega un Producto, falso caso contrario.
+     */
     public boolean registrarProducto(){
         if(oferta == null){this.oferta = new ArrayList<>();}
         Scanner sc = new Scanner(System.in);
@@ -239,7 +297,12 @@ public class Proveedor extends Usuario{
         }
         return true;
     }
-    
+    /**
+     * Metodo que gestiona los pedidos cambia su estado ya sea a Procesando o Despachando segun corresponda.
+     * Si el estado actual del pedido es Inicializado lo cambia a procesado
+     * Si el estado actual del pedido es Procesado lo cambia a despachado.
+     * @return  verdadero si existen los pedidos y se cambia su estado, falso caso contrario
+     */
     public boolean gestionarPedidos(){
         if(!consultarPedidos()){
             return false;
@@ -284,6 +347,13 @@ public class Proveedor extends Usuario{
         sc.close();
         return true;
     }
+    /**
+     * Metodo que elimina el producto seleccionado por su codigo una cantidad de veces.
+     * Si la cantidad de veces es mayor a la cantidad actual borra todas las que pueda.
+     * @param cod       codigo unico del producto a eliminar.
+     * @param cantidad  cantidad del producto a eliminar
+     * @return          verdadero si borra algun producto, falso caso contrario.
+     */
     public boolean eliminarProducto(String cod, String cantidad){
         if(cod.isEmpty()){return false;}
         int cant = 0;
@@ -311,6 +381,13 @@ public class Proveedor extends Usuario{
         }
         return i>0;
     }
+    /**
+     * Metodo para editar un producto dado un Producto seleccionado.
+     * Se procede a pedir toda la informacion del producto a editar si uno de los datos no es valido,
+     * se retorna al menu anterior.
+     * @param prod  Producto a editar de la lista de Producto oferta
+     * @return      verdadero si el producto fue editado con exito, falso caso contrario.
+     */
     public boolean editarProducto(Producto prod){
         if(prod == null){return false;}
         if(oferta == null){return false;}

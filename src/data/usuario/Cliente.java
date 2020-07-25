@@ -10,37 +10,61 @@ import data.pedido.Pedido;
 import data.producto.Producto;
 import java.util.ArrayList;
 /**
- *
- * @author Usuario
+ * Clase que contiene a uno de los actores del Sistema AgroStoreNU.
+ * Cliente extiende de Usuario.
+ * Cliente es aquel que compra en el sistema y genera pedidos al sistema para que el Proveedor asignado lo gestione.
+ * @author Grupo1ProyectoPOO
  */
 public class Cliente extends Usuario {
+    //Variables de instancia.
     private Pago formaPago;
     private CarritoCompra carrito;
     private ArrayList<Pedido> pedidos;
-
+    /**
+     * Constructor que instancie a un Cliente.
+     * @param user      Usuario unico del Cliente. (Heredado del Padre)
+     * @param password  Contrasena del Cliente. (Heredado del Padre)
+     * @param nombre    Nombre del Cliente. (Heredado del Padre)
+     * @param id        ID Unica del Cliente. (Heredado del Padre)
+     * @param direccion Direccion del Cliente. (Heredado del Padre)
+     * @param ubicacion Ubicacion del Cliente. (Heredado del Padre)
+     * @param correo    Correo del Cliente. (Heredado del Padre)
+     * @param formaPago Forma de pago del Cliente. 
+     */
     public Cliente(String user, String password, String nombre, String id, String direccion, Coordenada ubicacion, String correo, Pago formaPago) {
         super(user, password, nombre, id, direccion, ubicacion, correo);
         this.formaPago = formaPago;
         this.carrito = new CarritoCompra();
         this.pedidos = new ArrayList<>();
     }
-    
-
+    /**
+     * Metodo que retorna la variable de instancia formaPago de una instancia de Cliente.
+     * @return Metodo de pago del Cliente.
+     */
     public Pago getFormaPago() {
         return formaPago;
     }
-
+    /**
+     * Metodo que retorna la variable de instancia carrito de una instancia de Cliente.
+     * carrito es una Lista de Producto.
+     * @return lista de Producto de Cliente.
+     */
     public CarritoCompra getCarrito() {
         return carrito;
     }
-
+    /**
+     * Metodo que retorna la variable de instancia pedidos de una instancia de Cliente.
+     * pedidos es una lista de Pedido.
+     * @return lista de Pedidos solicitados por el Cliente.
+     */
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
-    
-    
-    
-    // Consultar productos de proveedores a 50 km de distancia maxima.
+    /**
+     * Metodo sobreescrito que permite consultar los productos dado una Lista de Producto cualquiera.
+     * @param productos lista de Producto cualquiera.
+     * @return          Falso si la lista no es null ni esta vacia, verdadero caso contrario. 
+     */
     @Override
     public boolean consultarProducto(ArrayList<Producto> productos){
         if(productos == null){return false;}
@@ -56,7 +80,12 @@ public class Cliente extends Usuario {
         }
         return true;
     }
-
+    /**
+     * Metodo sobreescrito que permite filtrar una lista de Producto dado una Lista de filtros
+     * La lista de productos es filtrado dado una categoria y/o un nombre.
+     * @param dataFiltro    lista de filtros dados por el Cliente.
+     * @return              Lista de Producto filtrados.
+     */
     @Override
     public ArrayList<Producto> filtrarProducto(ArrayList<String> dataFiltro){
         if(dataFiltro == null){
@@ -102,6 +131,10 @@ public class Cliente extends Usuario {
         return filtrado;
     
     }
+    /**
+     * Metodo sobreescrito que muestra los pedidos solicitados por el Cliente.
+     * @return falso si la lista de Pedido de la instancia Cliente es nula o vacia, caso contrario vederadero.
+     */
     @Override
     public boolean consultarPedidos(){
         if(pedidos == null){return false;}
@@ -139,6 +172,11 @@ public class Cliente extends Usuario {
         }
         return true;
     }
+    /**
+     * Metodo que remueve los pedidos del Cliente si hubo errores en la generacion de pedidos o cancelacion de la compra.
+     * @param pedidos   Lista de Pedido de la instancia de Cliente.
+     * @return          Verdadero si remueve los pedidos generados con exito, caso contrario falso.
+     */
     public boolean removerPedidosGenerados(ArrayList<Pedido> pedidos){
         if(this.pedidos == null){return false;}
         if(this.pedidos.isEmpty()){return false;}
@@ -165,7 +203,15 @@ public class Cliente extends Usuario {
         }
         return false;
     }
-
+    /**
+     * Metodo que agrega Producto al carrito de compras de la instancia de Cliente dado un codigo.
+     * Este metodo agrega tantos productos como haya disponible.
+     * Si no existen mas productos en stock de un proveedor dado un codigo, busca productos de otro proveedor en el que
+     * su nombre coincida con el producto deseado.
+     * @param cod       codigo unico del producto.
+     * @param cantidad  cantidad de productos que se desean agregar
+     * @return          verdadero si agrega productos, caso contrario falso.
+     */
     public boolean agregarAlCarrito(String cod, String cantidad){
         if(carrito == null){ return false;}
         if(Sistema.getProductosCercanos(this) == null){return false;}
@@ -220,6 +266,9 @@ public class Cliente extends Usuario {
         }
         return bandera;
     }
+    /**
+     * Metodo que muestra el carrito de compras del Cliente.
+     */
     public void verCarrito(){
         if(carrito == null || carrito.getProductos().isEmpty()){ System.out.println("NO HAY PRODUCTOS EN CARRITO");}
         else{
@@ -239,6 +288,14 @@ public class Cliente extends Usuario {
         }
        
     }
+    /**
+     * Metodo que genera los pedidos de acuerdo a los productos que esten en el carrito de compras del cliente.
+     * Si algun producto pertenece a otro proveedor, se genera un pedido distinto.
+     * Por cada proveedor existente atribuido a cada producto se generara un pedido y sera agregado a la lista
+     * de pedidos del cliente.
+     * @param pago  Metodo de pago del Cliente
+     * @return      Lista de Pedido generado.
+     */
     public ArrayList<Pedido> generarPedidos(Pago pago){
         if(carrito==null){return null;}
         if(carrito.getProductos().isEmpty()){return null;}
@@ -274,6 +331,10 @@ public class Cliente extends Usuario {
         }
         return pedidosRealizados;
     }
+    /**
+     * Metodo que calcula el total a pagar de la lista de productos ingresados en el carrito de compra del cliente.
+     * @return valor del total a pagar.
+     */
     public double calcularTotalCarrito(){
         return Producto.getTotalAPagar(carrito.getProductos());
     }

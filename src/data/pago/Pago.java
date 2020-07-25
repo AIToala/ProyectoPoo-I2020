@@ -9,9 +9,18 @@ import data.pedido.Pedido;
 import java.util.ArrayList;
 
 /**
- *
- * @author Usuario
+ * Clase asbtracta Pago usada para admitir formas de pago de instancias de Cliente.
+ * @author Grupo1ProyectoPOO
  */
+
 public abstract class Pago {
+    /**
+    * Metodo asbtracto usado para procesar el pago como argumento posee un string s y una lista de pedidos d.
+    * @param    s   String.
+    * @param    d   lista de pedidos.
+    * @see PagoPayPal
+    * @see PagoTarjeta
+    * @see Pedido
+    */
     public abstract boolean procesarPago(String s, ArrayList<Pedido> d);
 }

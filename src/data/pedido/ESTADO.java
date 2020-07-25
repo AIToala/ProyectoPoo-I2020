@@ -6,9 +6,10 @@
 package data.pedido;
 
 /**
- *
- * @author Usuario
+ * ENUM que representa el estado que puede tomar una instancia de Pedido.
+ * @author Grupo1ProyectoPOO
  */
 public enum ESTADO {
+    //Valores de estado.
     SOLICITADO, PROCESANDO, DESPACHADO;   
 }
