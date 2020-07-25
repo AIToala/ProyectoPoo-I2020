@@ -12,7 +12,6 @@ import java.util.ArrayList;
  * Clase que define a la forma de pago mediante Tarjeta de un Cliente.
  * PagoTarjeta hereda de Pago 
  * @author Grupo1ProyectoPOO
- * @see Pago
  */
 public class PagoTarjeta extends Pago{
     //variables de instancia
@@ -24,7 +23,6 @@ public class PagoTarjeta extends Pago{
      * @param   tipoTarjeta     Representa el tipo de tarjeta.
      * @param   numTarjeta      Numero de la tarjeta.
      * @param   nombreTitular   Propietario/Titular de la tarjeta
-     * @see Pago
      */
     public PagoTarjeta(String tipoTarjeta, String numTarjeta, String nombreTitular) {
         this.tipoTarjeta = tipoTarjeta;
@@ -44,7 +42,6 @@ public class PagoTarjeta extends Pago{
      * @param   emailTo     correo del Cliente.
      * @param   pedidos     lista de Pedidos realizados por el Cliente.
      * @return              true si el pago se genero con exito, false caso contrario.
-     * @see Email
      */
     @Override
     public boolean procesarPago(String emailTo, ArrayList<Pedido> pedidos){

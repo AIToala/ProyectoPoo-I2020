@@ -30,7 +30,6 @@ public class Email{
      * Constructor que instancia a Email.
      * @param   receptor   Cliente al que se enviara correo.
      * @param   mensaje    Mensaje a enviar.
-     * @see javax.mail
      */
     public Email(String receptor, String mensaje){
         this.receptor = receptor;
@@ -38,8 +37,6 @@ public class Email{
     }
     /**
      * Metodo que envia correos al cliente pasado por parametro de la instancia de email receptor.
-     * @see java.util.Properties
-     * @see javax.mail
      */
     public boolean enviarEmail(){
         Properties props = new Properties();
@@ -79,7 +76,6 @@ public class Email{
      * @param   correo        nombre de usuario.
      * @param   pedido    contrasena del usuario.
      * @return  true si envia el correo, caso contrario false.
-     * @see Pedido
      */
     public static boolean enviarEmailConfirmacion(String correo, ArrayList<Pedido> pedido){
         if(correo.isEmpty()){return false;}

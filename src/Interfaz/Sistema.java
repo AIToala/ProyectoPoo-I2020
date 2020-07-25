@@ -214,9 +214,6 @@ public class Sistema {
      * Menu para el tipo de Usuario Proveedor nos muestra las acciones que realiza
      * dentro del programa AgrostoreNU.
      * @param   u   Una instancia de Usuario que sera downcasteado a Proveedor.  
-     * @see data.producto
-     * @see data.usuario
-     * @see data.producto
      */
     public void menuProveedor(Usuario u){
         Proveedor currProv = (Proveedor) u;
@@ -399,9 +396,6 @@ public class Sistema {
      * Menu para el tipo de Usuario Cliente nos muestra las acciones que realiza
      * dentro del programa AgrostoreNU.
      * @param   u   Una instancia de Usuario que sera downcasteada a Cliente.  
-     * @see data.usuario
-     * @see data.mail
-     * @see data.pedido
      */
     public void menuCliente(Usuario u){
         System.out.println("Menu Cliente");
@@ -512,8 +506,6 @@ public class Sistema {
      * Menu Carrito de Compra para una instancia Cliente nos muestra las acciones que realiza el cliente
      * al carrito de compras dentro del programa AgrostoreNU.
      * @param   currCl   Una instancia de Cliente.
-     * @see CarritoCompra
-     * @see data.producto
      */
     public void menuCarritoCompra(Cliente currCl){
        System.out.println("Menu Carrito de compras");
@@ -816,7 +808,6 @@ public class Sistema {
      * Recorre lista de usuarios y usa el metodo addProductos del Proveedor.
      * @param   u       instancia de Usuario.
      * @param   prod    arrayList de Producto.
-     * @see Proveedor
      */
     public static void recuperaProdProv(Usuario u, ArrayList<Producto> prod){
         if(usuarios != null){
@@ -890,7 +881,6 @@ public class Sistema {
      * retorna null.
      * @param   c   instancia de Cliente.
      * @return      un arrayList de Producto.
-     * @see     Coordenada
      */
     public static ArrayList<Producto> getProductosCercanos(Cliente c){
         if(productos == null){return null;}
@@ -912,7 +902,6 @@ public class Sistema {
      * enviados via mail, si la lista de pedidos es null o esta vacia retorna un null. 
      * @param   pedidos     arrayList de Pedido. 
      * @return              arrayList de String.
-     * @see Email
      */
     public static ArrayList<String> PedidoEmail(ArrayList<Pedido> pedidos){
         if(pedidos==null){return null;}

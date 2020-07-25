@@ -12,7 +12,6 @@ import java.util.ArrayList;
  * Clase que define a la forma de pago mediante PayPal de un Cliente.
  * PagoPayPal hereda de Pago 
  * @author Grupo1ProyectoPOO
- * @see Pago
  */
 public class PagoPayPal extends Pago {
     //Variables de instancia de PagoPayPal
@@ -36,7 +35,6 @@ public class PagoPayPal extends Pago {
     * @param    emailTo   correo del Cliente que compra.
     * @param    pedidos   lista de pedidos.
     * @return             true si el pago se proceso exitosamente, caso contrario false.
-    * @see Pago
     */
     @Override
     public boolean procesarPago(String emailTo, ArrayList<Pedido> pedidos){
