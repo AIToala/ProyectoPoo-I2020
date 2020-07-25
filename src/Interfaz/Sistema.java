@@ -186,7 +186,7 @@ public class Sistema {
                             
                             Coordenada cd = new Coordenada(lat, longi);
                             String d7 = data.get(6);
-                            Proveedor newUser = new Proveedor(d1,d2,d3,d4,d5,cd,d7,contacto); 
+                            Proveedor newUser = new Proveedor(d1,d2,d3,d4,d5,cd,d7,contacto);
                             System.out.println("Proveedor creado exitosamente.");
                             if(!registrarUsuario(newUser)){
                                 System.out.println("Algo innesperado ocurrio al guardar el usuario.");
@@ -652,7 +652,7 @@ public class Sistema {
         ArrayList<String> data = new ArrayList<>();
         do{
             System.out.println("Ingrese nombre de usuario: ");
-            String user = sc.nextLine().toLowerCase();
+            String user = sc.nextLine();
             if(user.isBlank() || user.isEmpty()){
                 valida = false;
             }
